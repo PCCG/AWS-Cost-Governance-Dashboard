@@ -1,4 +1,4 @@
-# costgovernancedashboard
+# AWS Cost Governance Dashboard
 
 ## Project setup
 ```
