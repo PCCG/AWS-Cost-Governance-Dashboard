@@ -8,7 +8,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Dashboard',
+    name: 'Dashboard', //The name is to be used when making use of the $router API to move to a different route
     component: Home
   },
   {
