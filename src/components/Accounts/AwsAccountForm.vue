@@ -1,0 +1,81 @@
+<template>
+  <v-container fluid class="component-within-sfc">
+    <v-layout row wrap>
+        <el-card style="width: 100% !important">
+          <header class="card-title">AWS Account Integration  <i class="el-icon-question" style="cursor: pointer;" title="More info"></i></header>
+          <el-form :rules="awsAccountFormrules" :ref="formName" :model="awsAccountForm">
+            <el-form-item label="Access Key ID" prop="accessKeyId">
+              <el-input v-model="awsAccountForm.accessKeyId"></el-input>
+            </el-form-item>
+            <el-form-item label="Secret Access Key" prop="secretAccessKey">
+              <el-input type="password" v-model="awsAccountForm.secretAccessKey"></el-input>
+            </el-form-item>
+            <el-form-item label="AWS service to integrate with">
+              <el-radio-group v-model="awsAccountForm.awsService">
+                <el-radio v-once :label="COST_EXPLORER_SERVICE"></el-radio>
+                <el-radio v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Polling interval (in hours)" prop="pollingInterval">
+              <el-input-number :min="1" controls-position="right" v-model="awsAccountForm.pollingInterval"></el-input-number>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" :loading="loading" @click="integrateAwsAccount">Submit</el-button>
+            </el-form-item>
+          </el-form>
+
+        </el-card>
+    </v-layout>
+  </v-container>
+</template>
+
+<script>
+
+const COST_EXPLORER_SERVICE = 'Cost Explorer (CE)';
+const COST_AND_USAGE_REPORTS_SERVICE = 'Cost and Usage Reports (CUR)';
+
+export default {
+  data () {
+    return {
+      formName: 'awsAccountForm',
+      COST_EXPLORER_SERVICE,
+      COST_AND_USAGE_REPORTS_SERVICE,
+      loading: false,
+      awsAccountForm: {
+        accessKeyId: '',
+        secretAccessKey: '',
+        awsService: COST_EXPLORER_SERVICE,
+        pollingInterval: null
+      },
+      awsAccountFormrules: {
+        accessKeyId: [
+          {required: true, message: 'Please specify the Access Key ID', trigger: 'blur'}
+        ],
+        secretAccessKey: [
+          {required: true, message: 'Please specify the Secret Access Key', trigger: 'blur'}
+        ],
+        pollingInterval: [
+          {required: true, message: 'Please specify the polling interval', trigger: 'blur'},
+        ]
+      }
+    }
+  },
+  methods: {
+    integrateAwsAccount () {
+      const vm = this;
+      vm.$refs[vm.formName].validate((valid) => {
+        if (valid) {
+          vm.loading = true;
+          setTimeout(function () {vm.loading = false;}, 3000);
+        } else {
+          return false;
+        }
+      });
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>
