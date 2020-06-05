@@ -2,7 +2,7 @@
   <v-container fluid class="component-within-sfc">
     <v-layout row wrap>
         <el-card style="width: 100% !important">
-          <header class="card-title">AWS Account Integration  <i class="el-icon-question" style="cursor: pointer;" title="More info"></i></header>
+          <header class="card-title">AWS Account Integration  <i @click="showHelpDialogForIntegratingAwsAccounts" class="el-icon-question" style="cursor: pointer;" title="More info"></i></header>
           <el-form :rules="awsAccountFormrules" :ref="formName" :model="awsAccountForm">
             <el-form-item label="Access Key ID" prop="accessKeyId">
               <el-input v-model="awsAccountForm.accessKeyId"></el-input>
@@ -23,13 +23,14 @@
               <el-button type="primary" :loading="loading" @click="integrateAwsAccount">Submit</el-button>
             </el-form-item>
           </el-form>
-
         </el-card>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+import helpDialog from '../../constants/helpDialog';
 
 const COST_EXPLORER_SERVICE = 'Cost Explorer (CE)';
 const COST_AND_USAGE_REPORTS_SERVICE = 'Cost and Usage Reports (CUR)';
@@ -41,6 +42,7 @@ export default {
       COST_EXPLORER_SERVICE,
       COST_AND_USAGE_REPORTS_SERVICE,
       loading: false,
+      showHelpDrawer: true,
       awsAccountForm: {
         accessKeyId: '',
         secretAccessKey: '',
@@ -61,6 +63,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'SET_HELP_DIALOG_CONTENTS',
+      'HELP_DIALOG_STATE'
+    ]),
+    showHelpDialogForIntegratingAwsAccounts () {
+      const vm = this;
+      vm.SET_HELP_DIALOG_CONTENTS(helpDialog.getHelpForIntegratingAwsAccounts());
+      vm.HELP_DIALOG_STATE(true);
+    },
     integrateAwsAccount () {
       const vm = this;
       vm.$refs[vm.formName].validate((valid) => {
