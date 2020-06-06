@@ -5,10 +5,10 @@
           <header class="card-title">AWS Account Integration  <i @click="showHelpDialogForIntegratingAwsAccounts" class="el-icon-question" style="cursor: pointer;" title="More info"></i></header>
           <el-form :rules="awsAccountFormrules" :ref="formName" :model="awsAccountForm">
             <el-form-item label="Access Key ID" prop="accessKeyId">
-              <el-input v-model="awsAccountForm.accessKeyId"></el-input>
+              <el-input v-model="awsAccountForm.accessKeyId" name="Access Key ID"></el-input>
             </el-form-item>
             <el-form-item label="Secret Access Key" prop="secretAccessKey">
-              <el-input type="password" v-model="awsAccountForm.secretAccessKey"></el-input>
+              <el-input type="password" v-model="awsAccountForm.secretAccessKey" name="Secret Access Key"></el-input>
             </el-form-item>
             <el-form-item label="AWS service to integrate with">
               <el-radio-group v-model="awsAccountForm.awsService">
@@ -20,7 +20,7 @@
               <el-input-number :min="1" controls-position="right" v-model="awsAccountForm.pollingInterval"></el-input-number>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" :loading="loading" @click="integrateAwsAccount">Submit</el-button>
+              <el-button type="primary" :loading="loading" @click="validateFormData" name="Integrate AWS account">Submit</el-button>
             </el-form-item>
           </el-form>
         </el-card>
@@ -31,6 +31,7 @@
 <script>
 import { mapMutations } from 'vuex';
 import helpDialog from '../../constants/helpDialog';
+import accountsClient from '../../rest/accountsClient'
 
 const COST_EXPLORER_SERVICE = 'Cost Explorer (CE)';
 const COST_AND_USAGE_REPORTS_SERVICE = 'Cost and Usage Reports (CUR)';
@@ -72,16 +73,25 @@ export default {
       vm.SET_HELP_DIALOG_CONTENTS(helpDialog.getHelpForIntegratingAwsAccounts());
       vm.HELP_DIALOG_STATE(true);
     },
-    integrateAwsAccount () {
+    validateFormData () {
       const vm = this;
       vm.$refs[vm.formName].validate((valid) => {
         if (valid) {
-          vm.loading = true;
-          setTimeout(function () {vm.loading = false;}, 3000);
+          vm.integrateAwsAccount();
         } else {
           return false;
         }
       });
+    },
+    integrateAwsAccount: async function () {
+      const vm = this;
+      try {
+        vm.loading = true;
+        await accountsClient.postAwsAccount(vm.awsAccountForm);
+      } catch (e) {
+        vm.loading = false;
+        window.console.log(e.stack);
+      }
     }
   }
 }
