@@ -56,7 +56,6 @@ describe('AwsAccountForm.vue', () => {
 
   it('should not display the information dialog when the user clicks on the button that says "OK"', () => {
     const appWrapper = mount(app, { store, localVue, vuetify, router });
-    const dialogContentsForIntegratingAwsAccounts = helpDialog.getHelpForIntegratingAwsAccounts();
     accountsWrapper.find('i.el-icon-question').trigger('click');
     appWrapper.find('.dialog-footer > button').trigger('click');
     expect(appWrapper.vm.showHelpDialog).toBe(false);
