@@ -18,7 +18,7 @@
 
 <script>
 import { mapMutations } from 'vuex';
-import awsAccountForm from '../components/Accounts/AwsAccountForm';
+import awsAccountForm from '../components/Integrations/AwsAccountForm';
 import helpDialog from '../constants/helpDialog';
 
 export default {

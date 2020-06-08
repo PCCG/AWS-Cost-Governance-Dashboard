@@ -14,10 +14,10 @@
                   dense
                 >
                   <v-list-item>
-                    <v-list-item-icon>
+                    <v-list-item-icon class="clickable" @click="redirectToTheDashboard">
                       <v-icon>mdi-spotlight</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-content>
+                    <v-list-item-content class="clickable" @click="redirectToTheDashboard">
                       <v-list-item-title class="title" style="font-family: 'Montserrat', sans-serif !important;">TORCH</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
@@ -69,14 +69,18 @@ export default {
         {icon:"mdi-view-dashboard", name: "Dashboard", to: "/"},
         {icon: "mdi-cloud-check", name: "Actions", to: "/actions"},
         {icon: "mdi-cash-usd", name: "Budgets", to: "/budgets"},
-        {icon:"mdi-playlist-plus", name: "Accounts", to: "/accounts"}
+        {icon:"mdi-cloud", name: "Integrations", to: "/integrations"}
       ]
     }
   },
   methods: {
     ...mapMutations([
       'HELP_DIALOG_STATE'
-    ])
+    ]),
+    redirectToTheDashboard () {
+      const vm = this;
+      vm.$router.push({name: 'Dashboard'})
+    }
   },
   computed: {
     ...mapState([
@@ -112,6 +116,10 @@ export default {
 
 .clickable-icon:hover {
   opacity: 0.6;
+}
+
+.clickable {
+  cursor: pointer;
 }
 
 .component-within-sfc {
