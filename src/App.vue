@@ -1,29 +1,44 @@
 <template>
   <v-app id="inspire">
     <div>
-          <v-app-bar color="#235380" dark>
-            <v-app-bar-nav-icon @click.stop="showDrawer = !showDrawer"></v-app-bar-nav-icon>
-            <v-toolbar-title>AWS Cost Governance Dashboard</v-toolbar-title>
-          </v-app-bar>
           <v-navigation-drawer
-            v-model="showDrawer"
             :color="primaryColor"
             dark
             app
             absolute
-            temporary
+            permanent
+            :mini-variant="displayMiniVariant"
           >
-            <v-list
-              nav
-              dense
-            >
-              <v-list-item link :key="route.name" v-for="route in navigationItems" :to="route.to">
-                <v-list-item-icon>
-                  <v-icon>{{route.icon}}</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>{{route.name}}</v-list-item-title>
-              </v-list-item>
-            </v-list>
+                <v-list
+                  nav
+                  dense
+                >
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon>mdi-spotlight</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title class="title" style="font-family: 'Montserrat', sans-serif !important;">TORCH</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
+                <v-divider class="mb-2" />
+                <v-list nav expand>
+                  <v-list-item link :key="route.name" v-for="route in navigationItems" :to="route.to" :title="route.name">
+                    <v-list-item-icon>
+                      <v-icon>{{route.icon}}</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title class="subtitle-2" style="font-family: 'Montserrat', sans-serif !important;">{{route.name}}</v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
+                  <v-list-item title="Expand drawer" v-if="displayMiniVariant" @click="displayMiniVariant = false">
+                    <v-icon>mdi-chevron-right</v-icon>
+                  </v-list-item>
+                  <v-list-item v-else @click="displayMiniVariant = true" title="Minimize drawer">
+                    <v-icon>mdi-chevron-left</v-icon>
+                  </v-list-item>
+                </v-list>
           </v-navigation-drawer>
           <el-dialog
             :title="helpDialogTitle"
@@ -48,11 +63,13 @@ export default {
   data () {
     return {
       showDrawer: false,
+      displayMiniVariant: true,
       primaryColor: '#235380',
       navigationItems: [
         {icon:"mdi-view-dashboard", name: "Dashboard", to: "/"},
-        {icon:"mdi-playlist-plus", name: "Accounts", to: "/accounts"},
-        {icon: "mdi-cash-usd", name: "Budgets", to: "/budgets"}
+        {icon: "mdi-cloud-check", name: "Actions", to: "/actions"},
+        {icon: "mdi-cash-usd", name: "Budgets", to: "/budgets"},
+        {icon:"mdi-playlist-plus", name: "Accounts", to: "/accounts"}
       ]
     }
   },
@@ -85,6 +102,16 @@ export default {
   font-family: 'Montserrat', sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.clickable-icon {
+  cursor: pointer;
+  font-size: 25px !important;
+  margin: 1%;
+}
+
+.clickable-icon:hover {
+  opacity: 0.6;
 }
 
 .component-within-sfc {

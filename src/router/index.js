@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Budgets from '../views/Budgets.vue'
+import Actions from '../views/Actions.vue'
 
 Vue.use(VueRouter)
 
@@ -23,10 +24,16 @@ const routes = [
     path: '/budgets',
     name: 'Budgets',
     component: Budgets
+  },
+  {
+    path: '/actions',
+    name: 'Actions',
+    component: Actions
   }
 ]
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 })
 
