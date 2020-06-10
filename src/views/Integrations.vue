@@ -1,16 +1,24 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout row wrap>
-      <v-flex xs12 class="text-right">
+      <v-flex xs8 class="text-left">
+        <header class="headline" style="font-family: 'Montserrat', sans-serif !important">INTEGRATIONS</header>
+      </v-flex>
+      <v-flex xs4 class="text-right">
         <i class="el-icon-circle-plus clickable-icon" title="Add an AWS account" @click="addAwsAccount = true" role="button"></i>
         <i class="el-icon-question clickable-icon" title="Help" @click="showHelpDialogForIntegratingAwsAccounts" role="button"></i>
       </v-flex>
+      <v-flex xs12>
+        <aws-accounts-integrated class="component-within-sfc"></aws-accounts-integrated>
+      </v-flex>
+      <!-- The class "component-within-sfc" should be specified in all the components that are a part of "views"-->
+      <!-- The statement specified above is not applicable to this component (since it's a dialog) -->
       <el-dialog
         :title="awsAccountFormTitle"
         :visible.sync="addAwsAccount"
         :close-on-click-modal="false"
         width="40%">
-        <aws-account-form></aws-account-form>
+        <aws-account-form @form-processed='addAwsAccount = false'></aws-account-form>
       </el-dialog>
     </v-layout>
   </v-container>
@@ -18,14 +26,17 @@
 
 <script>
 import { mapMutations } from 'vuex';
+
 import awsAccountForm from '../components/Integrations/AwsAccountForm';
+import awsAccountsIntegrated from '@/components/Integrations/AwsAccountsIntegrated';
+
 import helpDialog from '../constants/helpDialog';
 
 export default {
   data () {
     return {
-      addAwsAccount: false,
-      awsAccountFormTitle: 'AWS Account Integration'
+      awsAccountFormTitle: 'Integrate AWS Account',
+      addAwsAccount: false
     }
   },
   methods: {
@@ -40,7 +51,8 @@ export default {
     ])
   },
   components: {
-    awsAccountForm
+    awsAccountForm,
+    awsAccountsIntegrated
   }
 }
 </script>
