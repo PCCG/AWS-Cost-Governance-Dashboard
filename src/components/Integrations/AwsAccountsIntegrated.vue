@@ -13,7 +13,11 @@
     </el-table-column>
     <el-table-column
       prop="pollingInterval"
-      label="Polling interval (in hours)">
+      label="Polling Interval (in hours)">
+    </el-table-column>
+    <el-table-column
+      prop="budgetsSpecified"
+      label="Budgets Specified">
     </el-table-column>
   </el-table>
 </template>

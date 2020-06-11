@@ -1,10 +1,10 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs8 class="text-left">
+      <v-flex xs9 class="text-left">
         <header class="headline" style="font-family: 'Montserrat', sans-serif !important">INTEGRATIONS</header>
       </v-flex>
-      <v-flex xs4 class="text-right">
+      <v-flex xs3 class="text-right">
         <i class="el-icon-circle-plus clickable-icon" title="Add an AWS account" @click="addAwsAccount = true" role="button"></i>
         <i class="el-icon-question clickable-icon" title="Help" @click="showHelpDialogForIntegratingAwsAccounts" role="button"></i>
       </v-flex>
@@ -27,8 +27,8 @@
 <script>
 import { mapMutations } from 'vuex';
 
-import awsAccountForm from '../components/Integrations/AwsAccountForm';
-import awsAccountsIntegrated from '@/components/Integrations/AwsAccountsIntegrated';
+import awsAccountForm from '@/components/integrations/AwsAccountForm';
+import awsAccountsIntegrated from '@/components/integrations/AwsAccountsIntegrated';
 
 import helpDialog from '../constants/helpDialog';
 

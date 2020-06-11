@@ -50,7 +50,9 @@
               <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
             </span>
           </el-dialog>
-          <router-view id="dashboard"/>
+          <v-content>
+            <router-view id="dashboard" class="component-within-sfc"/>
+          </v-content>
     </div>
   </v-app>
 </template>
@@ -83,6 +85,9 @@ export default {
     }
   },
   computed: {
+    //mapState does not function properly with non-namespaced modules. By default, state
+    //properties that are defined as part of non-namespaced modules are assumed to be a
+    //part of a namespace. For more information, visit https://github.com/vuejs/vuex/issues/1592
     ...mapState([
       'helpDialogContent',
       'helpDialogTitle'
@@ -124,7 +129,7 @@ export default {
 
 .component-within-sfc {
   width: 95% !important;
-  margin: 3% !important;
+  margin: 2% !important;
 }
 
 .help-dialog-content {
