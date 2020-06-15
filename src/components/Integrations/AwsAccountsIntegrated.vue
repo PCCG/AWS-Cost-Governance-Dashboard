@@ -1,6 +1,6 @@
 <template>
   <el-table
-    :data="listOfAccounts"
+    :data="integratedAccounts"
     :empty-text="ACCOUNTS_NOT_SPECIFIED_TEXT"
     style="width: 100%">
     <el-table-column
@@ -28,8 +28,12 @@ const ACCOUNTS_NOT_SPECIFIED_TEXT = 'No integrations have been specified';
 export default {
   data () {
     return {
-      listOfAccounts: [],
       ACCOUNTS_NOT_SPECIFIED_TEXT
+    }
+  },
+  props: {
+    integratedAccounts: {
+      type: Array
     }
   }
 }

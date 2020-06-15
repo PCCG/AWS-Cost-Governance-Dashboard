@@ -2,57 +2,94 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xs9 class="text-left">
-        <header class="headline" style="font-family: 'Montserrat', sans-serif !important">INTEGRATIONS</header>
+        <header class="title" style="font-family: 'Montserrat', sans-serif !important">AWS INTEGRATIONS</header>
       </v-flex>
       <v-flex xs3 class="text-right">
-        <i class="el-icon-circle-plus clickable-icon" title="Add an AWS account" @click="addAwsAccount = true" role="button"></i>
-        <i class="el-icon-question clickable-icon" title="Help" @click="showHelpDialogForIntegratingAwsAccounts" role="button"></i>
+        <i class="el-icon-plus clickable-icon" title="Add an AWS account" @click="addAwsAccount = true" role="button"></i>
+        <i class="el-icon-refresh clickable-icon" title="Refresh" @click="FETCH_AWS_ACCOUNTS" role="button"></i>
+        <i class="el-icon-help clickable-icon" title="Help" @click="showHelpDialogForRoute($route.name)" role="button"></i>
       </v-flex>
       <v-flex xs12>
-        <aws-accounts-integrated class="component-within-sfc"></aws-accounts-integrated>
+        <aws-accounts-integrated class="component-within-sfc" :integrated-accounts="integratedAccounts"></aws-accounts-integrated>
       </v-flex>
       <!-- The class "component-within-sfc" should be specified in all the components that are a part of "views"-->
       <!-- The statement specified above is not applicable to this component (since it's a dialog) -->
       <el-dialog
-        :title="awsAccountFormTitle"
         :visible.sync="addAwsAccount"
         :close-on-click-modal="false"
         width="40%">
-        <aws-account-form @form-processed='addAwsAccount = false'></aws-account-form>
+        <template v-slot:title>
+          <header class="subtitle-1" style="font-family: 'Montserrat', sans-serif !important;"><v-icon x-large>mdi-aws</v-icon> Account Integration</header>
+        </template>
+        <aws-account-form @form-processed='addAwsAccount = false'>
+          <template v-slot:fields="awsAccountForm">
+            <el-form-item label="AWS service to integrate with" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS service', trigger: 'blur'}]">
+              <el-radio-group v-model="awsAccountForm.awsAccountFormModel.awsService">
+                <el-radio v-once :label="COST_EXPLORER_SERVICE"></el-radio>
+                <el-radio v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="Polling interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the polling interval', trigger: 'blur'}]">
+              <el-input-number :min="1" controls-position="right" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
+            </el-form-item>
+          </template>
+          <template v-slot:submit="awsAccountForm">
+            <el-form-item>
+              <el-button type="primary" :loading="awsAccountForm.loading" @click="awsAccountForm.validateForm(() => {INTEGRATE_AWS_ACCOUNT(awsAccountForm.awsAccountFormModel)})" name="Integrate AWS account">Submit</el-button>
+            </el-form-item>
+          </template>
+        </aws-account-form>
       </el-dialog>
     </v-layout>
   </v-container>
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+import { mapMutations, mapState, mapActions } from 'vuex';
+
+import helpDialogMixin from '@/mixins/helpDialogMixin';
 
 import awsAccountForm from '@/components/integrations/AwsAccountForm';
 import awsAccountsIntegrated from '@/components/integrations/AwsAccountsIntegrated';
 
-import helpDialog from '../constants/helpDialog';
+const COST_EXPLORER_SERVICE = 'Cost Explorer (CE)';
+const COST_AND_USAGE_REPORTS_SERVICE = 'Cost and Usage Reports (CUR)';
 
 export default {
   data () {
     return {
       awsAccountFormTitle: 'Integrate AWS Account',
-      addAwsAccount: false
+      COST_EXPLORER_SERVICE,
+      COST_AND_USAGE_REPORTS_SERVICE,
+      addAwsAccount: false,
+      routeTitle: ''
     }
   },
   methods: {
-    showHelpDialogForIntegratingAwsAccounts () {
-      const vm = this;
-      vm.SET_HELP_DIALOG_CONTENTS(helpDialog.getHelpForIntegratingAwsAccounts());
-      vm.HELP_DIALOG_STATE(true);
-    },
     ...mapMutations([
       'SET_HELP_DIALOG_CONTENTS',
       'HELP_DIALOG_STATE'
+    ]),
+    ...mapActions('integrations', [
+      'FETCH_AWS_ACCOUNTS',
+      'INTEGRATE_AWS_ACCOUNT'
     ])
   },
   components: {
     awsAccountForm,
     awsAccountsIntegrated
+  },
+  computed: {
+    ...mapState('integrations', [
+      'integratedAccounts'
+    ])
+  },
+  mixins: [
+    helpDialogMixin
+  ],
+  created () {
+    const vm = this;
+    vm.FETCH_AWS_ACCOUNTS();
   }
 }
 </script>

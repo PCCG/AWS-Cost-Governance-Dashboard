@@ -1,58 +1,50 @@
 <template>
   <v-app id="inspire">
     <div>
-          <v-navigation-drawer
-            :color="primaryColor"
-            dark
-            app
-            absolute
-            permanent
-            :mini-variant="displayMiniVariant"
-          >
-                <v-list
-                  nav
-                  dense
-                >
-                  <v-list-item>
-                    <v-list-item-icon class="clickable" @click="redirectToTheDashboard">
-                      <v-icon>mdi-spotlight</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content class="clickable" @click="redirectToTheDashboard">
-                      <v-list-item-title class="title" style="font-family: 'Montserrat', sans-serif !important;">TORCH</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-list>
-                <v-divider class="mb-2" />
-                <v-list nav expand>
-                  <v-list-item link :key="route.name" v-for="route in navigationItems" :to="route.to" :title="route.name">
-                    <v-list-item-icon>
-                      <v-icon>{{route.icon}}</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-content>
-                      <v-list-item-title class="subtitle-2" style="font-family: 'Montserrat', sans-serif !important;">{{route.name}}</v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-                  <v-list-item title="Expand drawer" v-if="displayMiniVariant" @click="displayMiniVariant = false">
-                    <v-icon>mdi-chevron-right</v-icon>
-                  </v-list-item>
-                  <v-list-item v-else @click="displayMiniVariant = true" title="Minimize drawer">
-                    <v-icon>mdi-chevron-left</v-icon>
-                  </v-list-item>
-                </v-list>
-          </v-navigation-drawer>
-          <el-dialog
-            :title="helpDialogTitle"
-            :visible.sync="showHelpDialog"
-            :show-close="false"
-            width="50%">
-            <div class="help-dialog-content" v-html="helpDialogContent"></div>
-            <span slot="footer" class="dialog-footer">
-              <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
-            </span>
-          </el-dialog>
-          <v-content>
-            <router-view id="dashboard" class="component-within-sfc"/>
-          </v-content>
+      <v-app-bar
+        :color="primaryColor"
+        app
+        clipped-left
+        dark
+      >
+        <v-app-bar-nav-icon @click.stop="minimizeDrawer = !minimizeDrawer"></v-app-bar-nav-icon>
+        <v-toolbar-title>TORCH</v-toolbar-title>
+        <v-toolbar-title class="divider"></v-toolbar-title>
+        <v-toolbar-title style="font-size: 1.05rem;">{{currentRouteName}}</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-btn icon color="white" title="Help" @click="showHelpDialogForRoute(currentRouteName)"><v-icon small>mdi-help</v-icon></v-btn>
+      </v-app-bar>
+      <v-navigation-drawer
+        app
+        clipped
+        absolute
+        permanent
+        :mini-variant="minimizeDrawer"
+      >
+        <v-list nav expand>
+          <v-list-item :color="primaryColor" link :key="route.name" v-for="route in navigationItems" :to="route.to" :title="route.name">
+            <v-list-item-icon>
+              <v-icon class="primary-color">{{route.icon}}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title class="subtitle-2 primary-color" style="font-family: 'Montserrat', sans-serif !important;">{{route.name}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-navigation-drawer>
+      <el-dialog
+        :title="helpDialogTitle"
+        :visible.sync="showHelpDialog"
+        :show-close="false"
+        width="50%">
+        <div class="help-dialog-content" v-html="helpDialogContent"></div>
+        <span slot="footer" class="dialog-footer">
+          <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
+        </span>
+      </el-dialog>
+      <v-content>
+        <router-view class="component-within-sfc"/>
+      </v-content>
     </div>
   </v-app>
 </template>
@@ -60,12 +52,14 @@
 <script>
 import { mapState, mapMutations } from 'vuex';
 
+import helpDialogMixin from '@/mixins/helpDialogMixin';
+
 export default {
   name: 'App',
   data () {
     return {
-      showDrawer: false,
-      displayMiniVariant: true,
+      minimizeDrawer: true,
+      currentRouteTitle: '',
       primaryColor: '#235380',
       navigationItems: [
         {icon:"mdi-view-dashboard", name: "Dashboard", to: "/"},
@@ -77,6 +71,7 @@ export default {
   },
   methods: {
     ...mapMutations([
+      'SET_HELP_DIALOG_CONTENTS',
       'HELP_DIALOG_STATE'
     ]),
     redirectToTheDashboard () {
@@ -101,8 +96,16 @@ export default {
         const vm = this;
         vm.HELP_DIALOG_STATE(showHelpDialog);
       }
+    },
+    currentRouteName () {
+      const vm = this;
+      const routeName = vm.$route.name;
+      return routeName.toUpperCase();
     }
-  }
+  },
+  mixins: [
+    helpDialogMixin
+  ]
 };
 </script>
 
@@ -113,10 +116,21 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.primary-color {
+  color: #235380 !important;
+}
+
+.divider {
+  margin: 1%;
+  width: 2px;
+  height: 50%;
+  border-left: 1px solid white;
+}
+
 .clickable-icon {
   cursor: pointer;
   font-size: 25px !important;
-  margin: 1%;
+  margin: 2%;
 }
 
 .clickable-icon:hover {
@@ -143,9 +157,5 @@ export default {
 
 [class*=" el-icon-"], [class^=el-icon-] {
   color: #235380 !important;
-}
-
-#dashboard {
-  min-height: 89vh !important;
 }
 </style>
