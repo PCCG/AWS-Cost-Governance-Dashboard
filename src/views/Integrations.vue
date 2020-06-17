@@ -7,7 +7,7 @@
       <v-flex xs3 class="text-right">
         <i class="el-icon-plus clickable-icon" title="Add an AWS account" @click="addAwsAccount = true" role="button"></i>
         <i class="el-icon-refresh clickable-icon" title="Refresh" @click="FETCH_AWS_ACCOUNTS" role="button"></i>
-        <i class="el-icon-help clickable-icon" title="Help" @click="showHelpDialogForRoute($route.name)" role="button"></i>
+        <i class="el-icon-help clickable-icon" title="Help" @click="showHelpDialogForRoute(routeName)" role="button"></i>
       </v-flex>
       <v-flex xs12>
         <aws-accounts-integrated class="component-within-sfc" :integrated-accounts="integratedAccounts"></aws-accounts-integrated>
@@ -24,13 +24,13 @@
         <aws-account-form @form-processed='addAwsAccount = false'>
           <template v-slot:fields="awsAccountForm">
             <el-form-item label="AWS service to integrate with" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS service', trigger: 'blur'}]">
-              <el-radio-group v-model="awsAccountForm.awsAccountFormModel.awsService">
-                <el-radio v-once :label="COST_EXPLORER_SERVICE"></el-radio>
-                <el-radio v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
+              <el-radio-group  v-model="awsAccountForm.awsAccountFormModel.awsService">
+                <el-radio name="Cost Explorer" v-once :label="COST_EXPLORER_SERVICE"></el-radio>
+                <el-radio name="CUR" v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
               </el-radio-group>
             </el-form-item>
             <el-form-item label="Polling interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the polling interval', trigger: 'blur'}]">
-              <el-input-number :min="1" controls-position="right" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
+              <el-input-number name="Polling interval" :min="1" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
             </el-form-item>
           </template>
           <template v-slot:submit="awsAccountForm">
@@ -59,6 +59,7 @@ export default {
   data () {
     return {
       awsAccountFormTitle: 'Integrate AWS Account',
+      routeName: '',
       COST_EXPLORER_SERVICE,
       COST_AND_USAGE_REPORTS_SERVICE,
       addAwsAccount: false,
@@ -89,6 +90,7 @@ export default {
   ],
   created () {
     const vm = this;
+    vm.routeName = vm.$route.name;
     vm.FETCH_AWS_ACCOUNTS();
   }
 }

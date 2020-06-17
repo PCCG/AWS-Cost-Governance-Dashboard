@@ -13,6 +13,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.4.4",
     "element-ui": "^2.4.5",
+    "flush-promises": "^1.0.2",
     "roboto-fontface": "^0.10.0",
     "vue": "^2.6.10",
     "vue-google-charts": "^0.3.2",
