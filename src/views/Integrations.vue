@@ -17,20 +17,21 @@
       <el-dialog
         :visible.sync="addAwsAccount"
         :close-on-click-modal="false"
+        destroy-on-close
         width="40%">
         <template v-slot:title>
           <header class="subtitle-1" style="font-family: 'Montserrat', sans-serif !important;"><v-icon x-large>mdi-aws</v-icon> Account Integration</header>
         </template>
         <aws-account-form @form-processed='addAwsAccount = false'>
           <template v-slot:fields="awsAccountForm">
-            <el-form-item label="AWS service to integrate with" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS service', trigger: 'blur'}]">
+            <el-form-item label="AWS Service" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS service', trigger: 'change'}]">
               <el-radio-group  v-model="awsAccountForm.awsAccountFormModel.awsService">
                 <el-radio name="Cost Explorer" v-once :label="COST_EXPLORER_SERVICE"></el-radio>
                 <el-radio name="CUR" v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="Polling interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the polling interval', trigger: 'blur'}]">
-              <el-input-number name="Polling interval" :min="1" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
+            <el-form-item label="Polling Interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the polling interval', trigger: 'blur'}]">
+              <el-input-number controls-position="right" name="Polling interval" :min="1" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
             </el-form-item>
           </template>
           <template v-slot:submit="awsAccountForm">

@@ -1,5 +1,5 @@
 <template>
-  <el-form :rules="defaultAwsAccountFormRules" :ref="formName" :model="defaultAwsAccountFormModel">
+  <el-form status-icon :rules="defaultAwsAccountFormRules" :ref="formName" :model="defaultAwsAccountFormModel">
     <el-form-item label="Access Key ID" prop="accessKeyId">
       <el-input v-model="defaultAwsAccountFormModel.accessKeyId" name="Access Key ID"></el-input>
     </el-form-item>
@@ -13,7 +13,10 @@
 </template>
 
 <script>
+
 const FORM_PROCESSED_CUSTOM_EVENT = 'form-processed';
+const AWS_ACCESS_KEY_ID_REGEX=/(?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])/;
+const AWS_SECRET_ACCESS_KEY_REGEX=/(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=])/;
 
 export default {
   data () {
@@ -26,15 +29,29 @@ export default {
       },
       defaultAwsAccountFormRules: {
         accessKeyId: [
-          {required: true, message: 'Please specify the Access Key ID', trigger: 'blur'}
+          {validator: this.validateAwsAccessKeyId, trigger: 'blur'}
         ],
         secretAccessKey: [
-          {required: true, message: 'Please specify the Secret Access Key', trigger: 'blur'}
+          {validator: this.validateSecretAccessKey, trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
+    validateAwsAccessKeyId (rule, value, callback) {
+      if(AWS_ACCESS_KEY_ID_REGEX.test(value)) {
+        callback();
+      } else {
+        callback(new Error("Please specify a valid Access Key ID"));
+      }
+    },
+    validateSecretAccessKey (rule, value, callback) {
+      if(AWS_SECRET_ACCESS_KEY_REGEX.test(value)) {
+        callback();
+      } else {
+        callback(new Error("Please specify a valid Secret Access Key"));
+      }
+    },
     validateFormData (processCb) {
       const vm = this;
       vm.loading = true;
