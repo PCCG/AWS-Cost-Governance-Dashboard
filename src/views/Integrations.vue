@@ -24,19 +24,23 @@
         </template>
         <aws-account-form @form-processed='addAwsAccount = false'>
           <template v-slot:fields="awsAccountForm">
-            <el-form-item label="AWS Service" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS service', trigger: 'change'}]">
+            <el-form-item label="Alias Name" prop="aliasName" :rules="[{required: true, message: 'Please specify an Alias', trigger: 'blur'}]">
+              <el-input v-model="awsAccountForm.awsAccountFormModel.aliasName" name="Alias Name"></el-input>
+            </el-form-item>
+            <el-form-item label="AWS Service" prop="awsService" :rules="[{required: true, message: 'Please choose a AWS Service', trigger: 'change'}]">
               <el-radio-group  v-model="awsAccountForm.awsAccountFormModel.awsService">
                 <el-radio name="Cost Explorer" v-once :label="COST_EXPLORER_SERVICE"></el-radio>
                 <el-radio name="CUR" v-once :label="COST_AND_USAGE_REPORTS_SERVICE"></el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="Polling Interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the polling interval', trigger: 'blur'}]">
+            <el-form-item label="Polling Interval (in hours)" prop="pollingInterval" :rules="[{required: true, message: 'Please specify the Polling Interval', trigger: 'blur'}]">
               <el-input-number controls-position="right" name="Polling interval" :min="1" v-model="awsAccountForm.awsAccountFormModel.pollingInterval"></el-input-number>
             </el-form-item>
           </template>
           <template v-slot:submit="awsAccountForm">
-            <el-form-item>
+            <el-form-item class="text-right">
               <el-button type="primary" :loading="awsAccountForm.loading" @click="awsAccountForm.validateForm(() => {INTEGRATE_AWS_ACCOUNT(awsAccountForm.awsAccountFormModel)})" name="Integrate AWS account">Submit</el-button>
+              <el-button class="primary-color" :loading="awsAccountForm.loading" @click="addAwsAccount = false" name="Cancel">Cancel</el-button>
             </el-form-item>
           </template>
         </aws-account-form>
@@ -54,7 +58,7 @@ import awsAccountForm from '@/components/integrations/AwsAccountForm';
 import awsAccountsIntegrated from '@/components/integrations/AwsAccountsIntegrated';
 
 const COST_EXPLORER_SERVICE = 'Cost Explorer (CE)';
-const COST_AND_USAGE_REPORTS_SERVICE = 'Cost and Usage Reports (CUR)';
+const COST_AND_USAGE_REPORTS_SERVICE = 'Cost & Usage Reports (CUR)';
 
 export default {
   data () {

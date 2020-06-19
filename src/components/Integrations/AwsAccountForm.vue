@@ -29,10 +29,10 @@ export default {
       },
       defaultAwsAccountFormRules: {
         accessKeyId: [
-          {validator: this.validateAwsAccessKeyId, trigger: 'blur'}
+          {required: true, validator: this.validateAwsAccessKeyId, trigger: 'blur'}
         ],
         secretAccessKey: [
-          {validator: this.validateSecretAccessKey, trigger: 'blur'}
+          {required: true, validator: this.validateSecretAccessKey, trigger: 'blur'}
         ]
       }
     }

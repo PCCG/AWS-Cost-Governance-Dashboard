@@ -17,7 +17,6 @@
       <v-navigation-drawer
         app
         clipped
-        absolute
         permanent
         :mini-variant="minimizeDrawer"
       >
@@ -149,6 +148,10 @@ export default {
 .help-dialog-content {
   word-break: keep-all;
   text-align: justify;
+}
+
+.el-dialog__body {
+  padding: 5px 20px !important;
 }
 
 .card-title {
