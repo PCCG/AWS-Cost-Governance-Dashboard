@@ -1,4 +1,4 @@
-import accountsClient from '@/rest/accountsClient'
+import accountsClient from '@/rest/aws/accountsClient'
 
 export default {
   FETCH_AWS_ACCOUNTS: async (context) => {

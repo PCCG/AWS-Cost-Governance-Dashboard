@@ -103,8 +103,4 @@ export default {
 
 <style scoped>
 
-.el-dialog__body {
-  padding: 0 !important;
-}
-
 </style>

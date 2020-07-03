@@ -3,6 +3,11 @@
     :data="integratedAccounts"
     :empty-text="ACCOUNTS_NOT_SPECIFIED_TEXT"
     style="width: 100%">
+    <el-table-column type="expand">
+      <template v-slot="props">
+
+      </template>
+    </el-table-column>
     <el-table-column
       prop="aliasName"
       label="Alias Name">
