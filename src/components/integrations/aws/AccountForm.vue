@@ -13,8 +13,6 @@
 </template>
 
 <script>
-
-const FORM_PROCESSED_CUSTOM_EVENT = 'form-processed';
 const AWS_ACCESS_KEY_ID_REGEX=/(?<![A-Z0-9])[A-Z0-9]{20}(?![A-Z0-9])/;
 const AWS_SECRET_ACCESS_KEY_REGEX=/(?<![A-Za-z0-9/+=])[A-Za-z0-9/+=]{40}(?![A-Za-z0-9/+=])/;
 
@@ -37,6 +35,12 @@ export default {
       }
     }
   },
+  props: {
+    integrationAccountStep: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     validateAwsAccessKeyId (rule, value, callback) {
       if(AWS_ACCESS_KEY_ID_REGEX.test(value)) {
@@ -52,29 +56,29 @@ export default {
         callback(new Error("Please specify a valid Secret Access Key"));
       }
     },
-    validateFormData (processCb) {
+    validateFormData: function () {
       const vm = this;
-      vm.loading = true;
-      vm.$refs[vm.formName].validate( async (valid) => {
-        if (valid) {
-          try {
-            await processCb();
+      return new Promise((resolve, reject) => {
+        vm.loading = true;
+        vm.$refs[vm.formName].validate((valid) => {
+          if (valid) {
             vm.loading = false;
-            vm.resetForm();
-            vm.$emit(FORM_PROCESSED_CUSTOM_EVENT);
-          } catch (e) {
-            window.console.log(e.stack);
+            resolve(vm.defaultAwsAccountFormModel);
+          } else {
+            vm.loading = false;
+            reject(new Error("An invalid value has been specified"));
           }
-        } else {
-          vm.loading = false;
-          return false;
-        }
-      });
+        });
+      })
     },
     resetForm() {
       const vm = this;
       this.$refs[vm.formName].resetFields();
     }
+  },
+  mounted () {
+    const vm = this;
+    vm.integrationAccountStep.setFunctionToExecuteOnNext(vm.validateFormData);
   }
 }
 </script>

@@ -41,8 +41,8 @@
           <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
         </span>
       </el-dialog>
-      <v-content>
-        <router-view class="component-within-sfc"/>
+      <v-content style="background: rgba(175, 180, 200, 0.1);">
+        <router-view class="component-within-sfc" style="min-height: 81.8vh;"/>
       </v-content>
     </div>
   </v-app>
@@ -115,6 +115,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
 }
 
+header {
+  font-weight: 600 !important;
+}
+
 .primary-color {
   color: #235380 !important;
 }
@@ -150,15 +154,15 @@ export default {
   text-align: justify;
 }
 
+.el-step__description {
+  word-break: keep-all !important;
+}
+
 .el-dialog__body {
   padding: 5px 20px !important;
 }
 
 .card-title {
-  font-size: 1 rem !important;
-}
-
-[class*=" el-icon-"], [class^=el-icon-] {
-  color: #235380 !important;
+  font-size: 1.15rem !important;
 }
 </style>
