@@ -1,5 +1,6 @@
 export default {
   helpDialogContent: '',
   showHelpDialog: false,
-  helpDialogTitle: ''
+  helpDialogTitle: '',
+  errorMessage: ''
 }

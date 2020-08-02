@@ -41,6 +41,20 @@
           <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        :visible="errorOccured()"
+        @close="SET_ERROR_MESSAGE('')"
+        width="40%">
+        <template v-slot:title>
+          <header class="card-title"><i class="el-icon-error el-step__description is-error card-title" style="padding-right: 3%"></i>An error occured</header>
+        </template>
+        <template v-slot:default>
+          {{errorMessage}}
+        </template>
+        <template v-slot:footer>
+          <el-button type="primary" size="small" @click="SET_ERROR_MESSAGE('')">OK</el-button>
+        </template>
+      </el-dialog>
       <v-content style="background: rgba(175, 180, 200, 0.1);">
         <router-view class="component-within-sfc" style="min-height: 81.8vh;"/>
       </v-content>
@@ -71,11 +85,19 @@ export default {
   methods: {
     ...mapMutations([
       'SET_HELP_DIALOG_CONTENTS',
-      'HELP_DIALOG_STATE'
+      'HELP_DIALOG_STATE',
+      'SET_ERROR_MESSAGE'
     ]),
     redirectToTheDashboard () {
       const vm = this;
       vm.$router.push({name: 'Dashboard'})
+    },
+    errorOccured () {
+      const vm = this;
+      if (vm.errorMessage && vm.errorMessage !== '') {
+        return true;
+      }
+      return false;
     }
   },
   computed: {
@@ -84,7 +106,8 @@ export default {
     //part of a namespace. For more information, visit https://github.com/vuejs/vuex/issues/1592
     ...mapState([
       'helpDialogContent',
-      'helpDialogTitle'
+      'helpDialogTitle',
+      'errorMessage'
     ]),
     showHelpDialog: {
       get () {

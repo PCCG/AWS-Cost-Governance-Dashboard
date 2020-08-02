@@ -6,5 +6,8 @@ export default {
   },
   HELP_DIALOG_STATE: (state, showHelpDialog) => {
     state.showHelpDialog = showHelpDialog;
+  },
+  SET_ERROR_MESSAGE: (state, errorMessage) => {
+    state.errorMessage = errorMessage;
   }
 }

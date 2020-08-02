@@ -32,7 +32,6 @@
     </el-dialog>
     <el-dialog
       :visible="true"
-      selectedProvider
       v-if="getCurrentStep() > 0 && selectedProvider === PROVIDER_AWS_NAME"
       :close-on-click-modal="false"
       @close="cancelIntegration"
@@ -74,16 +73,36 @@
           <el-button class="primary-color" @click="cancelIntegration">Cancel</el-button>
         </template>
       </el-dialog>
+      <el-dialog
+        :visible="true"
+        v-if="getCurrentStep() > 0 && selectedProvider === PROVIDER_GCP_NAME"
+        :close-on-click-modal="false"
+        @close="cancelIntegration"
+        width="40%">
+          <template v-slot:title>
+            <header class="card-title">Integrate GCP Account</header>
+          </template>
+          <gcp-account-form :integrationAccountStep="gcpAccountIntegrationSteps[1]" v-show="getCurrentStep() === 1"></gcp-account-form>
+          <template v-slot:footer>
+            <el-button type="primary" v-show="isNextStepAvailable" @click="actionToRunOnNext">Next</el-button>
+            <el-button type="primary" v-show="!isNextStepAvailable" name="Integrate Account" @click="actionToRunOnNext">Submit</el-button>
+            <el-button type="primary" v-show="getCurrentStep() > 0" @click="previousStep">Back</el-button>
+            <el-button class="primary-color" @click="cancelIntegration">Cancel</el-button>
+          </template>
+        </el-dialog>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 
 import awsAccountIntegrationSteps from '@/constants/integrations/aws/integrationSteps'
+import gcpAccountIntegrationSteps from '@/constants/integrations/gcp/integrationSteps'
 
 import awsAccountForm from './aws/AccountForm'
 import awsCurForm from './aws/CurForm'
+
+import gcpAccountForm from './gcp/AccountForm'
 
 const PROVIDER_AWS_NAME = 'Amazon Web Services';
 const PROVIDER_GCP_NAME = 'Google Cloud Platform';
@@ -96,6 +115,8 @@ export default {
         PROVIDER_AWS_NAME,
         PROVIDER_GCP_NAME,
         awsAccountIntegrationSteps,
+        gcpAccountIntegrationSteps,
+        accountIntegrationSteps: null,
         supportedProviders: [
           {name: PROVIDER_AWS_NAME, logo: require('@/assets/integrations/aws-logo.png')},
           {name: PROVIDER_GCP_NAME, logo: require('@/assets/integrations/gcp-logo.png')}
@@ -123,23 +144,27 @@ export default {
         const vm = this;
         const currentStep = vm.getCurrentStep();
         const nextStep = currentStep + 1;
-        return vm.awsAccountIntegrationSteps[nextStep];
+        return vm.accountIntegrationSteps[nextStep];
       }
     },
     methods: {
       ...mapActions('integrations', [
         'INTEGRATE_AWS_ACCOUNT'
       ]),
+      ...mapMutations([
+        'SET_ERROR_MESSAGE'
+      ]),
       setSelectedProvider (provider) {
         const vm = this;
         vm.selectedProvider = provider.name;
+        vm.accountIntegrationSteps = vm.selectedProvider === vm.PROVIDER_AWS_NAME ? vm.awsAccountIntegrationSteps : vm.gcpAccountIntegrationSteps;
       },
       actionToRunOnNext: async function () {
         const vm = this;
         const currentStep = vm.getCurrentStep();
         try {
-          const formData = await vm.awsAccountIntegrationSteps[currentStep].getFunctionToExecuteOnNext()();
-          vm.awsAccountIntegrationSteps[currentStep].setFormData(formData);
+          const formData = await vm.accountIntegrationSteps[currentStep].getFunctionToExecuteOnNext()();
+          vm.accountIntegrationSteps[currentStep].setFormData(formData);
           //If there is a step after the current one, go to it. Else, submit the data specified in the form
           if (vm.isNextStepAvailable()) {
             vm.nextStep();
@@ -148,7 +173,7 @@ export default {
             vm.cancelIntegration();
           }
         } catch (error) {
-          window.console.log(error.message);
+          vm.SET_ERROR_MESSAGE(error.message);
         }
       },
       getCurrentStep () {
@@ -170,7 +195,8 @@ export default {
     },
     components: {
       awsAccountForm,
-      awsCurForm
+      awsCurForm,
+      gcpAccountForm
     }
 }
 </script>

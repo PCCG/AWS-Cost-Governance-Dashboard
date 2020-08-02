@@ -68,7 +68,7 @@ export default {
             resolve(vm.defaultAwsAccountFormModel);
           } else {
             vm.loading = false;
-            reject(new Error("An invalid value has been specified"));
+            reject(new Error("Please specify valid values against the fields"));
           }
         });
       })
