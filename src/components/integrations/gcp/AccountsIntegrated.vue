@@ -14,7 +14,7 @@
               <v-flex xs6 class="text-center jumbotron">
                 <i class="el-icon-video-play clickable-icon" title="Start Aggregation" @click="START_AGGREGATION({accessKeyId: props.row.accessKeyId, secretAccessKey: props.row.secretAccessKey})" role="button"></i>
                 <i class="el-icon-edit clickable-icon" title="Edit Integration" role="button"></i>
-                <i class="el-icon-delete clickable-icon" title="Delete Integration" @click="deleteAccount(props.row.accessKeyId)" role="button"></i>
+                <i class="el-icon-delete clickable-icon" title="Delete Integration" @click="deleteAccount(props.row._id)" role="button"></i>
               </v-flex>
             </v-layout>
           </v-container>
@@ -25,12 +25,12 @@
         label="Alias Name">
       </el-table-column>
       <el-table-column
-        prop="Cloud Storage Bucket"
-        label="cloudStorageBucket">
+        prop="cloudStorageBucket"
+        label="Cloud Storage Bucket">
       </el-table-column>
       <el-table-column
-        prop="Report Prefix"
-        label="billingReportPrefix">
+        prop="billingReportPrefix"
+        label="Report Prefix">
       </el-table-column>
       <el-table-column
         prop="pollingInterval"
@@ -61,7 +61,7 @@ export default {
       'START_AGGREGATION',
       'DELETE_GCP_ACCOUNT'
     ]),
-    deleteAccount (accessKeyId) {
+    deleteAccount (accountId) {
       const vm = this;
       vm.$confirm('This will permanently delete all the records associated with the account. Continue?', 'WARNING', {
         confirmButtonText: 'OK',
@@ -69,7 +69,7 @@ export default {
         type: 'warning',
         closeOnClickModal: false
       }).then(() => {
-        vm.DELETE_GCP_ACCOUNT(accessKeyId);
+        vm.DELETE_GCP_ACCOUNT(accountId);
       })
     }
   }

@@ -11,7 +11,7 @@ const accountsClient = axios.create({
 export default {
   fetchAwsAccounts: async () => {
     const accounts = await accountsClient.get('/getAccounts');
-    return accounts;
+    return accounts.data;
   },
   postAwsAccount: async (awsAccount) => {
     await accountsClient.post('/postAccount', {account: awsAccount});

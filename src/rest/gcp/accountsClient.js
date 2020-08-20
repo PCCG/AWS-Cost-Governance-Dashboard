@@ -13,8 +13,8 @@ export default {
     const gcpAccounts = await accountsClient.get('/fetch-accounts');
     return gcpAccounts.data;
   },
-  deleteAccount: async (aliasName) => {
-    await accountsClient.delete('/delete-account', {aliasName});
+  deleteAccount: async (accountId) => {
+    await accountsClient.post('/delete-account', {accountId});
   },
   integrateAccount: async (gcpAccount) => {
     await accountsClient.post('/create-account', {credentials: gcpAccount});

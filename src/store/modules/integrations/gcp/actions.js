@@ -7,7 +7,7 @@ export default {
   },
   FETCH_GCP_ACCOUNTS: async (context) => {
     const gcpAccounts = await accountsClient.fetchAccounts();
-    context.commit('INTEGRATED_ACCOUNTS', gcpAccounts.data);
+    context.commit('INTEGRATED_ACCOUNTS', gcpAccounts);
   },
   INTEGRATE_GCP_ACCOUNT: async (context, accountIntegrationSteps) => {
     const gcpAccount = accountIntegrationSteps[1].getFormData();

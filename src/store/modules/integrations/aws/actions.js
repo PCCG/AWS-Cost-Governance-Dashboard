@@ -7,7 +7,7 @@ import Cur from '@/models/aws/curModel'
 export default {
   FETCH_AWS_ACCOUNTS: async (context) => {
     const integratedAccounts = await accountsClient.fetchAwsAccounts();
-    context.commit('INTEGRATED_ACCOUNTS', integratedAccounts.data);
+    context.commit('INTEGRATED_ACCOUNTS', integratedAccounts);
   },
   INTEGRATE_AWS_ACCOUNT: async (context, accountMetadata) => {
     await accountsClient.postAwsAccount(accountMetadata);
