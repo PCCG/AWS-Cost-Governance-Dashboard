@@ -1,10 +1,13 @@
 <template>
   <el-form status-icon :rules="gcpAccountFormRules" :ref="formName" :model="gcpAccountFormModel">
-    <el-form-item label="Bucket Name" prop="bucketName">
-      <el-input v-model="gcpAccountFormModel.bucketName" name="Bucket Name"></el-input>
+    <el-form-item label="Alias Name" prop="aliasName">
+      <el-input v-model="gcpAccountFormModel.aliasName" name="Alias Name"></el-input>
     </el-form-item>
-    <el-form-item label="Report Prefix" prop="reportPrefix">
-      <el-input v-model="gcpAccountFormModel.reportPrefix" name="Report Prefix"></el-input>
+    <el-form-item label="Bucket Name" prop="cloudStorageBucket">
+      <el-input v-model="gcpAccountFormModel.cloudStorageBucket" name="Bucket Name"></el-input>
+    </el-form-item>
+    <el-form-item label="Report Prefix" prop="billingReportPrefix">
+      <el-input v-model="gcpAccountFormModel.billingReportPrefix" name="Report Prefix"></el-input>
     </el-form-item>
     <el-form-item>
       <upload-button :processingfunction="parseServiceAccountKeyFile" @processing-complete="addServiceAccountKeyFileContentToFormModel" value="Upload Service Account Key File" accept="application/JSON"/>
@@ -24,12 +27,16 @@ export default {
       formName: 'gcpAccountForm',
       loading: false,
       gcpAccountFormModel: {
-        bucketName: '',
-        reportPrefix: '',
-        serviceAccountKeyFileContent: null
+        aliasName: '',
+        cloudStorageBucket: '',
+        billingReportPrefix: '',
+        serviceAccountKeyFile: null
       },
       gcpAccountFormRules: {
-        bucketName: [
+        aliasName: [
+          {required: true, message: 'Please specify an alias', trigger: 'blur'}
+        ],
+        cloudStorageBucket: [
           {required: true, message: 'Please specify the name of the bucket', trigger: 'blur'}
         ]
       }
@@ -57,7 +64,7 @@ export default {
     },
     addServiceAccountKeyFileContentToFormModel (serviceAccountKeyFileContent) {
       const vm = this;
-      vm.gcpAccountFormModel.serviceAccountKeyFileContent = serviceAccountKeyFileContent;
+      vm.gcpAccountFormModel.serviceAccountKeyFile = serviceAccountKeyFileContent;
     },
     validateFormData: function () {
       const vm = this;
@@ -65,7 +72,7 @@ export default {
         vm.loading = true;
         vm.$refs[vm.formName].validate((valid) => {
           if (valid) {
-            if (!vm.gcpAccountFormModel.serviceAccountKeyFileContent) {
+            if (!vm.gcpAccountFormModel.serviceAccountKeyFile) {
               reject(new Error("Please upload the service account key file"));
             } else {
               vm.loading = false;

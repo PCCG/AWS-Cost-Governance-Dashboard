@@ -148,8 +148,11 @@ export default {
       }
     },
     methods: {
-      ...mapActions('integrations', [
+      ...mapActions('awsIntegrations', [
         'INTEGRATE_AWS_ACCOUNT'
+      ]),
+      ...mapActions('gcpIntegrations', [
+        'INTEGRATE_GCP_ACCOUNT'
       ]),
       ...mapMutations([
         'SET_ERROR_MESSAGE'
@@ -166,10 +169,14 @@ export default {
           const formData = await vm.accountIntegrationSteps[currentStep].getFunctionToExecuteOnNext()();
           vm.accountIntegrationSteps[currentStep].setFormData(formData);
           //If there is a step after the current one, go to it. Else, submit the data specified in the form
-          if (vm.isNextStepAvailable()) {
+          if (vm.isNextStepAvailable) {
             vm.nextStep();
           } else {
-            vm.INTEGRATE_AWS_ACCOUNT();
+            if (vm.selectedProvider === vm.PROVIDER_AWS_NAME) {
+              vm.INTEGRATE_AWS_ACCOUNT(vm.accountIntegrationSteps);
+            } else {
+              vm.INTEGRATE_GCP_ACCOUNT(vm.accountIntegrationSteps);
+            }
             vm.cancelIntegration();
           }
         } catch (error) {

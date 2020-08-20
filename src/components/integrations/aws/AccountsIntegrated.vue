@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions('integrations', [
+    ...mapActions('awsIntegrations', [
       'START_AGGREGATION',
       'DELETE_AWS_ACCOUNT'
     ]),

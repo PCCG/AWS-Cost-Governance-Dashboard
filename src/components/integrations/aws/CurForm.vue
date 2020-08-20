@@ -65,7 +65,7 @@ export default {
       const vm = this;
       vm.specifiedCurMetadata = CurMetadata
     },
-    ...mapActions('integrations', [
+    ...mapActions('awsIntegrations', [
       'FETCH_CUR_ASSOCIATED_WITH_ACCOUNT'
     ]),
     validateFormData: async function () {

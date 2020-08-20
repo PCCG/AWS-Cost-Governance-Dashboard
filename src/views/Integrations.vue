@@ -41,7 +41,7 @@ export default {
       'SET_HELP_DIALOG_CONTENTS',
       'HELP_DIALOG_STATE'
     ]),
-    ...mapActions('integrations', [
+    ...mapActions('awsIntegrations', [
       'FETCH_AWS_ACCOUNTS',
     ]),
     fetchIntegratedAccounts () {
@@ -54,7 +54,7 @@ export default {
     integrateAccount
   },
   computed: {
-    ...mapState('integrations', [
+    ...mapState('awsIntegrations', [
       'integratedAccounts'
     ])
   },
