@@ -31,30 +31,23 @@
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <el-dialog
+      <common-dialog
         :title="helpDialogTitle"
+        type="info"
         :visible.sync="showHelpDialog"
-        :show-close="false"
-        width="50%">
-        <div class="help-dialog-content" v-html="helpDialogContent"></div>
-        <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="showHelpDialog = false">OK</el-button>
-        </span>
-      </el-dialog>
-      <el-dialog
-        :visible="errorOccured()"
-        @close="SET_ERROR_MESSAGE('')"
-        width="40%">
-        <template v-slot:title>
-          <header class="card-title"><i class="el-icon-error el-step__description is-error card-title" style="padding-right: 3%"></i>An error occured</header>
-        </template>
+        cancelButtonText="OK">
+        <div v-html="helpDialogContent"></div>
+      </common-dialog>
+      <common-dialog
+        :visible.sync="showErrorDialog"
+        cancelButtonText="OK"
+        type="error"
+        title="An Error Occured"
+        @close="SET_ERROR_MESSAGE('')">
         <template v-slot:default>
           {{errorMessage}}
         </template>
-        <template v-slot:footer>
-          <el-button type="primary" size="small" @click="SET_ERROR_MESSAGE('')">OK</el-button>
-        </template>
-      </el-dialog>
+      </common-dialog>
       <v-content style="background: rgba(175, 180, 200, 0.1);">
         <router-view class="component-within-sfc" style="min-height: 81.8vh;"/>
       </v-content>
@@ -67,11 +60,14 @@ import { mapState, mapMutations } from 'vuex';
 
 import helpDialogMixin from '@/mixins/helpDialogMixin';
 
+import commonDialog from '@/components/common/dialog'
+
 export default {
   name: 'App',
   data () {
     return {
       minimizeDrawer: true,
+      showErrorDialog: false,
       currentRouteTitle: '',
       primaryColor: '#235380',
       navigationItems: [
@@ -91,13 +87,6 @@ export default {
     redirectToTheDashboard () {
       const vm = this;
       vm.$router.push({name: 'Dashboard'})
-    },
-    errorOccured () {
-      const vm = this;
-      if (vm.errorMessage && vm.errorMessage !== '') {
-        return true;
-      }
-      return false;
     }
   },
   computed: {
@@ -127,15 +116,24 @@ export default {
   },
   mixins: [
     helpDialogMixin
-  ]
+  ],
+  components: {
+    commonDialog
+  },
+  watch: {
+    errorMessage (message) {
+      const vm = this;
+      if (message && message !== '') {
+        vm.showErrorDialog = true;
+      }
+    }
+  }
 };
 </script>
 
 <style>
 .v-application {
   font-family: 'Montserrat', sans-serif !important;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 header {
@@ -172,17 +170,13 @@ header {
   margin: 2% !important;
 }
 
-.help-dialog-content {
-  word-break: keep-all;
-  text-align: justify;
-}
-
 .el-step__description {
   word-break: keep-all !important;
 }
 
 .el-dialog__body {
   padding: 5px 20px !important;
+  color: black !important;
 }
 
 .card-title {

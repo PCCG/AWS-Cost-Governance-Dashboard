@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="full-width el-button is-plain" @click="clearInput">
+    <label class="full-width el-button is-plain primary-color" @click="clearInput">
       <i class="el-icon-upload2"></i> {{value}}
       <input :ref="fieldName" style="display: none" type="file" @change="handleSuccess" :accept="accept"/>
     </label>
