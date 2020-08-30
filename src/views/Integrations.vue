@@ -10,8 +10,7 @@
         <i class="el-icon-help primary-color clickable-icon" title="Help" @click="showHelpDialogForRoute(routeName)" role="button"></i>
       </v-flex>
       <v-flex xs12>
-        <aws-accounts-integrated class="component-within-sfc" :integrated-accounts="awsIntegratedAccounts"></aws-accounts-integrated>
-        <gcp-accounts-integrated class="component-within-sfc" :integrated-accounts="gcpIntegratedAccounts"></gcp-accounts-integrated>
+        <integrated-accounts/>
       </v-flex>
       <!-- The class "component-within-sfc" should be specified in all the components that are a part of "views"-->
       <!-- The statement specified above is not applicable to this component (since it's a dialog) -->
@@ -21,13 +20,12 @@
 </template>
 
 <script>
-import { mapMutations, mapState, mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 
 import helpDialogMixin from '@/mixins/helpDialogMixin';
 
 import integrateAccount from '@/components/integrations/IntegrateAccount';
-import awsAccountsIntegrated from '@/components/integrations/aws/AccountsIntegrated';
-import gcpAccountsIntegrated from '@/components/integrations/gcp/AccountsIntegrated';
+import integratedAccounts from '@/components/integrations/IntegratedAccounts'
 
 export default {
   data () {
@@ -43,39 +41,25 @@ export default {
       'SET_HELP_DIALOG_CONTENTS',
       'HELP_DIALOG_STATE'
     ]),
-    ...mapActions('awsIntegrations', [
-      'FETCH_AWS_ACCOUNTS',
-    ]),
     ...mapActions('gcpIntegrations', [
-      'FETCH_GCP_ACCOUNTS',
+      'FETCH_GCP_ACCOUNTS'
+    ]),
+    ...mapActions('awsIntegrations', [
+      'FETCH_AWS_ACCOUNTS'
     ]),
     fetchIntegratedAccounts () {
       const vm = this;
-      vm.FETCH_AWS_ACCOUNTS();
       vm.FETCH_GCP_ACCOUNTS();
+      vm.FETCH_AWS_ACCOUNTS();
     }
   },
   components: {
-    awsAccountsIntegrated,
     integrateAccount,
-    gcpAccountsIntegrated
-  },
-  computed: {
-    ...mapState('awsIntegrations', {
-        awsIntegratedAccounts: 'integratedAccounts'
-    }),
-    ...mapState('gcpIntegrations', {
-        gcpIntegratedAccounts: 'integratedAccounts'
-    })
+    integratedAccounts
   },
   mixins: [
     helpDialogMixin
-  ],
-  created () {
-    const vm = this;
-    vm.routeName = vm.$route.name;
-    vm.fetchIntegratedAccounts();
-  }
+  ]
 }
 </script>
 

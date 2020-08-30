@@ -131,7 +131,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
+$app-color--primary: #235380;
+
 .v-application {
   font-family: 'Montserrat', sans-serif !important;
 }
@@ -141,7 +143,7 @@ header {
 }
 
 .primary-color {
-  color: #235380 !important;
+  color: $app-color--primary;
 }
 
 .divider {
@@ -177,6 +179,10 @@ header {
 .el-dialog__body {
   padding: 5px 20px !important;
   color: black !important;
+}
+
+.el-icon-info {
+  color: $app-color--primary !important;
 }
 
 .card-title {

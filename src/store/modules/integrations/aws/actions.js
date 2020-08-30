@@ -9,8 +9,12 @@ export default {
     const integratedAccounts = await accountsClient.fetchAwsAccounts();
     context.commit('INTEGRATED_ACCOUNTS', integratedAccounts);
   },
-  INTEGRATE_AWS_ACCOUNT: async (context, accountMetadata) => {
-    await accountsClient.postAwsAccount(accountMetadata);
+  INTEGRATE_AWS_ACCOUNT: async (context, accountIntegrationSteps) => {
+    let awsAccountToBeIntegrated = {};
+    for (let step of Object.values(accountIntegrationSteps)) {
+      awsAccountToBeIntegrated = Object.assign(awsAccountToBeIntegrated, step.getFormData());
+    }
+    await accountsClient.postAwsAccount(awsAccountToBeIntegrated);
     setTimeout(() => {context.dispatch('FETCH_AWS_ACCOUNTS')}, 1000);
   },
   START_AGGREGATION: async (context, iamUserCredentials) => {

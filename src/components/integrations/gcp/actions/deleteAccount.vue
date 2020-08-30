@@ -9,7 +9,7 @@
       All data associated with the account will be deleted when you delete the account. Do you still wish to proceed?
     </template>
     <template v-slot:footer>
-      <el-button type="primary" size="small" @click="deleteIntegratedAccount">OK</el-button>
+      <el-button type="primary" @click="deleteIntegratedAccount">OK</el-button>
     </template>
   </confirmation-dialog>
 </template>

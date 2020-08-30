@@ -1,3 +1,3 @@
 export default {
-  integratedAccounts: []
+  integratedAccounts: null
 }

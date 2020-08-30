@@ -10,7 +10,10 @@ export default {
     context.commit('INTEGRATED_ACCOUNTS', gcpAccounts);
   },
   INTEGRATE_GCP_ACCOUNT: async (context, accountIntegrationSteps) => {
-    const gcpAccount = accountIntegrationSteps[1].getFormData();
-    accountsClient.integrateAccount(gcpAccount);
+    let gcpAccountToBeIntegrated = {};
+    for (let step of Object.values(accountIntegrationSteps)) {
+      gcpAccountToBeIntegrated = Object.assign(gcpAccountToBeIntegrated, step.getFormData());
+    }
+    accountsClient.integrateAccount(gcpAccountToBeIntegrated);
   }
 }
