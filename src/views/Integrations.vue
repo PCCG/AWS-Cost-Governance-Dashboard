@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs9 class="text-left">
+      <v-flex xs12 sm9>
         <header class="title" style="font-family: 'Montserrat', sans-serif !important">PUBLIC CLOUD INTEGRATIONS</header>
       </v-flex>
-      <v-flex xs3 class="text-right">
+      <v-flex xs12 sm3 class="text-left text-sm-right">
         <i class="el-icon-plus primary-color clickable-icon" title="Add an account" @click="integrateAccount = true" role="button"></i>
         <i class="el-icon-refresh primary-color clickable-icon" title="Refresh" @click="fetchIntegratedAccounts" role="button"></i>
         <i class="el-icon-help primary-color clickable-icon" title="Help" @click="showHelpDialogForRoute(routeName)" role="button"></i>

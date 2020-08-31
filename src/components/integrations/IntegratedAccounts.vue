@@ -1,15 +1,25 @@
 <template>
   <v-container fluid>
     <v-layout row wrap>
-      <v-flex xs12>
-        <el-card :class="`integrated-account-card integrated-account-card__${account.provider.toLowerCase()}`" shadow="hover" :key="account.aliasName" v-for="account in integratedAccounts">
+      <v-flex xs12 sm6 v-for="account in integratedAccounts" :key="account.aliasName">
+        <el-card :class="`integrated-account-card integrated-account-card__${account.provider.toLowerCase()}`" shadow="hover">
           <v-container fluid>
             <v-layout row wrap>
-              <v-flex xs4 sm3>
-                <header class="clickable integrated-account-card-item" @click="openAccountDetails(account)">{{account.aliasName}}</header>
+              <v-flex xs6 sm7 style="align-self: center">
+                <header class="integrated-account-card-item" @click="openAccountDetails(account)"><span class="clickable">{{account.aliasName}}</span></header>
               </v-flex>
-              <v-flex xs3 sm4>
-                <el-tag style="margin-left: 2px;" size="mini" effect="plain">{{account.provider}}</el-tag>
+              <v-flex xs6 sm1 class="text-right" style="align-self: center">
+                <el-tag size="mini" effect="plain">{{account.provider}} Account</el-tag>
+              </v-flex>
+              <v-flex xs12 sm4 class="text-right text-sm-right" v-if="account.provider === AWS_ACCOUNT_IDENTIFIER">
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_AWS_ACCOUNT(account.accessKeyId)" title="Delete Integration" role="button"/>
+              </v-flex>
+              <v-flex xs12 sm4 class="text-right text-sm-right" v-else>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_GCP_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
               </v-flex>
             </v-layout>
           </v-container>
@@ -28,7 +38,9 @@ const GCP_ACCOUNT_IDENTIFIER = 'GCP';
 
 export default {
     data: () => ({
-        integratedAccounts: []
+        integratedAccounts: [],
+        AWS_ACCOUNT_IDENTIFIER,
+        GCP_ACCOUNT_IDENTIFIER
     }),
     methods: {
         ...mapActions('gcpIntegrations', [
@@ -102,6 +114,9 @@ export default {
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+    &__icon-size {
+      font-size: 26px !important;
     }
   }
 </style>
