@@ -20,9 +20,9 @@ export default {
   START_AGGREGATION: async (context, iamUserCredentials) => {
     await aggregationClient.startAggregation(iamUserCredentials);
   },
-  DELETE_AWS_ACCOUNT: async (context, accessKeyId) => {
-    await accountsClient.deleteAwsAccount(accessKeyId);
-    setTimeout(() => {context.dispatch('FETCH_AWS_ACCOUNTS')}, 1000);
+  DELETE_AWS_ACCOUNT: async (context, accountId) => {
+    await accountsClient.deleteAwsAccount(accountId);
+    context.dispatch('FETCH_AWS_ACCOUNTS');
   },
   FETCH_CUR_ASSOCIATED_WITH_ACCOUNT: async (context, iamUserCredentials) => {
     let listOfConfiguredReports = await curClient.fetchListOfReportsConfigured(iamUserCredentials);

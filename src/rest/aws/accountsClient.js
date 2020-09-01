@@ -16,7 +16,7 @@ export default {
   postAwsAccount: async (awsAccount) => {
     await accountsClient.post('/postAccount', {account: awsAccount});
   },
-  deleteAwsAccount: async (accessKeyId) => {
-    await accountsClient.post('/deleteAccount', {accessKeyId});
+  deleteAwsAccount: async (accountId) => {
+    await accountsClient.post('/deleteAccount', {accountId});
   }
 }

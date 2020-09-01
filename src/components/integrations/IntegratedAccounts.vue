@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-layout row wrap>
       <v-flex xs12 sm6 v-for="account in integratedAccounts" :key="account.aliasName">
-        <el-card :class="`integrated-account-card integrated-account-card__${account.provider.toLowerCase()}`" shadow="hover">
+        <el-card :class="`integrated-account-card integrated-account-card__${account.provider.toLowerCase()}`" shadow="always">
           <v-container fluid>
             <v-layout row wrap>
               <v-flex xs6 style="align-self: center">
@@ -11,7 +11,7 @@
               <v-flex xs6 class="text-right" v-if="account.provider === AWS_ACCOUNT_IDENTIFIER">
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
-                <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_AWS_ACCOUNT(account.accessKeyId)" title="Delete Integration" role="button"/>
+                <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_AWS_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
               </v-flex>
               <v-flex xs6 class="text-right" v-else>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
