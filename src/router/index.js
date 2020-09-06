@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
 import Integrations from '@/views/Integrations.vue'
+import Integration from '@/components/integrations/IntegratedAccount'
 import Budgets from '@/views/Budgets.vue'
 import Actions from '@/views/Actions.vue'
 
@@ -16,7 +17,14 @@ const routes = [
   {
     path: '/integrations',
     name: 'Integrations',
-    component: Integrations
+    component: Integrations,
+    children: [
+      {
+        name: 'Integration',
+        path: ':accountId',
+        component: Integration
+      }
+    ]
   },
   {
     path: '/budgets',

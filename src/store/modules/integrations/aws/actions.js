@@ -1,5 +1,5 @@
 import accountsClient from '@/rest/aws/accountsClient'
-import aggregationClient from '@/rest/aggregation/aggregationClient'
+import awsAggregationClient from '@/rest/aggregation/aws/aggregationClient'
 import curClient from '@/rest/aws/curClient'
 
 import Cur from '@/models/aws/curModel'
@@ -17,8 +17,8 @@ export default {
     await accountsClient.postAwsAccount(awsAccountToBeIntegrated);
     setTimeout(() => {context.dispatch('FETCH_AWS_ACCOUNTS')}, 1000);
   },
-  START_AGGREGATION: async (context, iamUserCredentials) => {
-    await aggregationClient.startAggregation(iamUserCredentials);
+  START_AWS_ACCOUNT_AGGREGATION: async (context, iamUserCredentials) => {
+    await awsAggregationClient.startAggregation(iamUserCredentials);
   },
   DELETE_AWS_ACCOUNT: async (context, accountId) => {
     await accountsClient.deleteAwsAccount(accountId);

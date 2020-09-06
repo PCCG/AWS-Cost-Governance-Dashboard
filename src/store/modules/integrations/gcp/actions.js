@@ -14,6 +14,7 @@ export default {
     for (let step of Object.values(accountIntegrationSteps)) {
       gcpAccountToBeIntegrated = Object.assign(gcpAccountToBeIntegrated, step.getFormData());
     }
-    accountsClient.integrateAccount(gcpAccountToBeIntegrated);
+    await accountsClient.integrateAccount(gcpAccountToBeIntegrated);
+    context.dispatch('FETCH_GCP_ACCOUNTS');
   }
 }

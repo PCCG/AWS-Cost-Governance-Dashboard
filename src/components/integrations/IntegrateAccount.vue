@@ -17,7 +17,7 @@
           style="width: 100%; font-weight: 600">
           <el-table-column align="center">
             <template v-slot="{ row }">
-              <img align="center" height="50px" :src="row.logo" class="image">
+              <img align="center" height="48px" :src="row.logo" class="image">
             </template>
           </el-table-column>
           <el-table-column
@@ -118,7 +118,7 @@ export default {
         gcpAccountIntegrationSteps,
         accountIntegrationSteps: null,
         supportedProviders: [
-          {name: PROVIDER_AWS_NAME, logo: require('@/assets/integrations/aws-logo.png')},
+          {name: PROVIDER_AWS_NAME, logo: require('@/assets/integrations/aws-logo.svg')},
           {name: PROVIDER_GCP_NAME, logo: require('@/assets/integrations/gcp-logo.png')}
         ],
         selectedProvider: null

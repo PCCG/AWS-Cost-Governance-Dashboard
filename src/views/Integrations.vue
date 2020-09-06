@@ -1,10 +1,10 @@
 <template>
   <v-container fluid>
-    <v-layout row wrap>
-      <v-flex xs12 sm9>
+    <v-layout row wrap v-if="$route.name === 'Integrations'">
+      <v-flex xs12 sm6>
         <header class="title" style="font-family: 'Montserrat', sans-serif !important">PUBLIC CLOUD INTEGRATIONS</header>
       </v-flex>
-      <v-flex xs12 sm3 class="text-left text-sm-right">
+      <v-flex xs12 sm6 class="text-left text-sm-right" style="align-self: center">
         <i class="el-icon-plus primary-color clickable-icon" title="Add an account" @click="integrateAccount = true" role="button"></i>
         <i class="el-icon-refresh primary-color clickable-icon" title="Refresh" @click="fetchIntegratedAccounts" role="button"></i>
         <i class="el-icon-help primary-color clickable-icon" title="Help" @click="showHelpDialogForRoute(routeName)" role="button"></i>
@@ -15,6 +15,11 @@
       <!-- The class "component-within-sfc" should be specified in all the components that are a part of "views"-->
       <!-- The statement specified above is not applicable to this component (since it's a dialog) -->
       <integrate-account v-if="integrateAccount" @close-dialog="integrateAccount = false" :integrateAccount="integrateAccount"/>
+    </v-layout>
+    <v-layout row wrap v-else>
+      <v-flex xs12>
+        <router-view/>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>

@@ -13,6 +13,10 @@ export default {
     const accounts = await accountsClient.get('/getAccounts');
     return accounts.data;
   },
+  fetchAwsAccount: async () => {
+    const account = await accountsClient.get('/getAccount');
+    return account.data;
+  },
   postAwsAccount: async (awsAccount) => {
     await accountsClient.post('/postAccount', {account: awsAccount});
   },

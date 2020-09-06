@@ -155,9 +155,9 @@ header {
 
 .clickable-icon {
   cursor: pointer;
-  font-size: 25px !important;
+  font-size: 26px !important;
+  margin-top: 1%;
   margin-left: 4%;
-  margin-top: 3%;
 }
 
 .clickable-icon:hover {
