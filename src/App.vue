@@ -23,10 +23,10 @@
         <v-list nav expand>
           <v-list-item :color="primaryColor" link :key="route.name" v-for="route in navigationItems" :to="route.to" :title="route.name">
             <v-list-item-icon>
-              <v-icon class="primary-color">{{route.icon}}</v-icon>
+              <v-icon>{{route.icon}}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title class="subtitle-2 primary-color" style="font-family: 'Montserrat', sans-serif !important;">{{route.name}}</v-list-item-title>
+              <v-list-item-title class="subtitle-2" style="font-family: 'Montserrat', sans-serif !important;">{{route.name}}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>

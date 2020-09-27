@@ -64,7 +64,11 @@ export default {
   },
   mixins: [
     helpDialogMixin
-  ]
+  ],
+  created () {
+    const vm = this;
+    vm.fetchIntegratedAccounts();
+  }
 }
 </script>
 

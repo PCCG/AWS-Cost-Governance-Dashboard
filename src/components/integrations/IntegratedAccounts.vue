@@ -1,14 +1,14 @@
 <template>
   <v-container>
     <v-layout row wrap>
-      <v-flex xs12 sm6 v-for="account in integratedAccounts" :key="account.aliasName">
-        <el-card :class="`integrated-account-card integrated-account-card__${account.provider.toLowerCase()}`" shadow="always">
+      <v-flex xs12 sm6 v-for="account in integratedAccounts" :key="account._id">
+        <el-card :class="`integrated-account-card integrated-account-card__${cloudProvider(account)}`" shadow="always">
           <v-container fluid>
             <v-layout row wrap>
               <v-flex xs6 style="align-self: center">
                 <header class="integrated-account-card-item" @click="openAccountDetails(account._id)"><span class="clickable">{{account.aliasName}}</span></header>
               </v-flex>
-              <v-flex xs6 class="text-right" v-if="account.provider === AWS_ACCOUNT_IDENTIFIER">
+              <v-flex xs6 class="text-right" v-if="cloudProvider(account) === 'AWS'">
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" @click="START_AWS_ACCOUNT_AGGREGATION(account._id)" title="Start Aggregation" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_AWS_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
@@ -19,7 +19,7 @@
                 <i class="clickable-icon el-icon-delete primary-color" @click="DELETE_GCP_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
               </v-flex>
               <v-flex xs12 class="text-left" style="align-self: center">
-                <el-tag size="mini" effect="plain">{{account.provider}} Account</el-tag>
+                <el-tag size="mini" effect="plain">{{cloudProvider(account)}} Account</el-tag>
               </v-flex>
             </v-layout>
           </v-container>
@@ -33,43 +33,21 @@
 import { mapActions, mapState } from 'vuex';
 import { orderBy } from 'lodash';
 
-const AWS_ACCOUNT_IDENTIFIER = 'AWS';
-const GCP_ACCOUNT_IDENTIFIER = 'GCP';
-
 export default {
-    data: () => ({
-        integratedAccounts: [],
-        AWS_ACCOUNT_IDENTIFIER,
-        GCP_ACCOUNT_IDENTIFIER
-    }),
     methods: {
         ...mapActions('gcpIntegrations', [
-        'DELETE_GCP_ACCOUNT',
-        'FETCH_GCP_ACCOUNTS'
+          'DELETE_GCP_ACCOUNT'
         ]),
         ...mapActions('awsIntegrations', [
-        'START_AWS_ACCOUNT_AGGREGATION',
-        'DELETE_AWS_ACCOUNT',
-        'FETCH_AWS_ACCOUNTS'
+          'START_AWS_ACCOUNT_AGGREGATION',
+          'DELETE_AWS_ACCOUNT'
         ]),
-        updateListOfIntegratedAccounts () {
-          const vm = this;
-          if (vm.awsIntegratedAccounts && vm.gcpIntegratedAccounts) {
-            const awsIntegratedAccounts = vm.awsIntegratedAccounts.map(account => {
-              account.provider = AWS_ACCOUNT_IDENTIFIER;
-              return account;
-            })
-            const gcpIntegratedAccounts = vm.gcpIntegratedAccounts.map(account => {
-              account.provider = GCP_ACCOUNT_IDENTIFIER;
-              return account;
-            })
-            const integratedAccounts = awsIntegratedAccounts.concat(gcpIntegratedAccounts);
-            vm.integratedAccounts = orderBy(integratedAccounts, ['aliasName'], ['asc']);
-          }
-        },
         openAccountDetails (accountId) {
           const vm = this;
           vm.$router.push({name: 'Integration', params: {accountId}});
+        },
+        cloudProvider (account) {
+          return account.accessKeyId ? 'AWS' : 'GCP';
         }
     },
     computed: {
@@ -79,21 +57,18 @@ export default {
         ...mapState('gcpIntegrations', {
             gcpIntegratedAccounts: 'integratedAccounts'
         }),
-    },
-    created: async function () {
-        const vm = this;
-        await Promise.all([vm.FETCH_AWS_ACCOUNTS(), vm.FETCH_GCP_ACCOUNTS()]);
-        vm.updateListOfIntegratedAccounts();
-    },
-    watch: {
-      awsIntegratedAccounts () {
-        const vm = this;
-        vm.updateListOfIntegratedAccounts();
-      },
-      gcpIntegratedAccounts () {
-        const vm = this;
-        vm.updateListOfIntegratedAccounts();
-      }
+        integratedAccounts () {
+          const vm = this;
+          let integratedAccounts = [];
+          if (vm.awsIntegratedAccounts && vm.gcpIntegratedAccounts) {
+            integratedAccounts = vm.awsIntegratedAccounts.concat(vm.gcpIntegratedAccounts);
+          } else if (vm.awsIntegratedAccounts) {
+            integratedAccounts = vm.awsIntegratedAccounts;
+          } else if (vm.gcpIntegratedAccounts) {
+            integratedAccounts = vm.gcpIntegratedAccounts;
+          }
+          return orderBy(integratedAccounts, ['aliasName'], ['asc']);
+        }
     }
 }
 </script>
@@ -104,10 +79,10 @@ export default {
 
   .integrated-account-card {
     margin: 2% !important;
-    &__gcp {
+    &__GCP {
       border-left: 4px solid $gcp-color--primary;
     }
-    &__aws {
+    &__AWS {
       border-left: 4px solid $aws-color--primary;
     }
     &-item {
