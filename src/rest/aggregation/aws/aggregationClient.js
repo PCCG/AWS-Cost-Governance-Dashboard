@@ -9,9 +9,15 @@ const aggregationClient = axios.create({
 });
 
 async function startAggregation (accountId) {
-    await aggregationClient.post('/startAggregation', {accountId});
+    await aggregationClient.post('/start-collection', {accountId});
+}
+
+async function fetchCollectionStatuses (accountId) {
+  const statuses = await aggregationClient.get(`/collection-status/?accountId=${accountId}`);
+  return statuses.data;
 }
 
 export default {
-  startAggregation
+  startAggregation,
+  fetchCollectionStatuses
 }

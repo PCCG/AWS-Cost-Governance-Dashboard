@@ -177,6 +177,11 @@ header {
   word-break: keep-all !important;
 }
 
+.el-table thead {
+  font-size: 16px !important;
+  color: rgba(61, 57, 57, 0.781) !important;
+}
+
 .el-dialog__body {
   padding: 5px 20px !important;
   color: black !important;

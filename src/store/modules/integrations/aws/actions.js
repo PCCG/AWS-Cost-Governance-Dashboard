@@ -15,10 +15,13 @@ export default {
       awsAccountToBeIntegrated = Object.assign(awsAccountToBeIntegrated, step.getFormData());
     }
     await accountsClient.postAwsAccount(awsAccountToBeIntegrated);
-    setTimeout(() => {context.dispatch('FETCH_AWS_ACCOUNTS')}, 1000);
+    context.dispatch('FETCH_AWS_ACCOUNTS');
   },
   START_AWS_ACCOUNT_AGGREGATION: async (context, iamUserCredentials) => {
     await awsAggregationClient.startAggregation(iamUserCredentials);
+  },
+  FETCH_COLLECTION_STATUS: async (context, accountId) => {
+    return await awsAggregationClient.fetchCollectionStatuses(accountId);
   },
   DELETE_AWS_ACCOUNT: async (context, accountId) => {
     await accountsClient.deleteAwsAccount(accountId);
