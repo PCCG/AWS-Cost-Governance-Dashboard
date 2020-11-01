@@ -12,8 +12,6 @@
       <v-flex xs12>
         <integrated-accounts/>
       </v-flex>
-      <!-- The class "component-within-sfc" should be specified in all the components that are a part of "views"-->
-      <!-- The statement specified above is not applicable to this component (since it's a dialog) -->
       <integrate-account v-if="integrateAccount" @close-dialog="integrateAccount = false" :integrateAccount="integrateAccount"/>
     </v-layout>
     <v-layout row wrap v-else>

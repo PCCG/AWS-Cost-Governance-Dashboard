@@ -17,7 +17,13 @@ async function fetchCollectionStatuses (accountId) {
   return statuses.data;
 }
 
+async function fetchProcessedData (accountId) {
+  const processedData = await aggregationClient.get(`/processed-data?accountId=${accountId}`);
+  return processedData.data;
+}
+
 export default {
   startAggregation,
-  fetchCollectionStatuses
+  fetchCollectionStatuses,
+  fetchProcessedData
 }

@@ -49,7 +49,7 @@
         </template>
       </common-dialog>
       <v-content style="background: rgba(175, 180, 200, 0.1);">
-        <router-view class="component-within-sfc" style="min-height: 81.8vh;"/>
+        <router-view style="min-height: 90.5vh; padding: 2rem; padding-top: 1rem"/>
       </v-content>
     </div>
   </v-app>
@@ -143,7 +143,19 @@ header {
 }
 
 .primary-color {
-  color: $app-color--primary;
+  color: $app-color--primary !important;
+}
+
+.scrollbar {
+  &::-webkit-scrollbar {
+    width: 0.3rem !important;
+    height: 0.3rem !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 1rem !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+  }
 }
 
 .divider {
@@ -168,18 +180,26 @@ header {
   cursor: pointer;
 }
 
-.component-within-sfc {
-  width: 95% !important;
-  margin: 2% !important;
-}
-
 .el-step__description {
   word-break: keep-all !important;
 }
 
 .el-table thead {
-  font-size: 16px !important;
+  font-size: 15px !important;
   color: rgba(61, 57, 57, 0.781) !important;
+}
+
+.el-table__empty-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100% !important;
+  line-height: 2rem !important;
+}
+
+
+[class^="el-"] {
+  font-family: 'Montserrat', sans-serif !important;  
 }
 
 .el-dialog__body {
@@ -193,5 +213,74 @@ header {
 
 .card-title {
   font-size: 1.15rem !important;
+}
+
+.card-information {
+  padding: 0.5rem !important;
+  font-weight: 600 !important;
+  text-align: justify;
+  color: rgba(61, 57, 57, 0.781) !important;
+  font-size: 1rem !important;
+  line-height: 2rem !important;
+}
+
+.margin-top-small {
+  margin-top: 0.5rem;
+}
+
+.margin-bottom-small {
+  margin-bottom: 0.5rem;
+}
+
+.margin-left-small {
+  margin-left: 0.5rem;
+}
+
+.margin-right-small {
+  margin-right: 0.5rem;
+}
+
+.margin-top-medium {
+  margin-top: 1rem;
+}
+
+.margin-bottom-medium {
+  margin-bottom: 1rem;
+}
+
+.margin-left-medium {
+  margin-left: 1rem;
+}
+
+.margin-right-medium {
+  margin-right: 1rem;
+}
+
+.margin-top-large {
+  margin-top: 1.5rem;
+}
+
+.margin-bottom-large {
+  margin-bottom: 1.5rem;
+}
+
+.margin-left-large {
+  margin-left: 1.5rem;
+}
+
+.margin-right-large {
+  margin-right: 1.5rem;
+}
+
+.margin-small {
+  margin: 0.5rem;
+}
+
+.margin-medium {
+  margin: 1rem;
+}
+
+.margin-large {
+  margin: 1.5rem;
 }
 </style>

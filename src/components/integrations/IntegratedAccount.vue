@@ -13,7 +13,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import AwsIntegratedAccount from './aws/IntegratedAccount';
+import AwsIntegratedAccount from './aws/IntegratedAccount/IntegratedAccount.vue';
 import GcpIntegratedAccount from './gcp/IntegratedAccount';
 
 export default {
