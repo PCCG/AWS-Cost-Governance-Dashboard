@@ -2,7 +2,7 @@
     <div>
         <GChart
             style="min-height: inherit"
-            type="PieChart"
+            type="BarChart"
             :data="chartData"
             :options="chartOptions"
         />
@@ -12,6 +12,7 @@
 <script>
 //components
 import { GChart } from 'vue-google-charts';
+import moment from 'moment';
 
 // const GROUP_BY_ACCOUNT_KEY = 'Account';
 const GROUP_BY_REGION_KEY = 'Region';
@@ -54,28 +55,31 @@ export default {
                         fontName: 'Montserrat'
                     }
                 },
-                pieHole: 0.4,
+                isStacked: true,
                 animation: {
                     duration: 1000,
                     easing: "out",
                     startup: true
                 },
+                vAxis: { 
+                    textStyle : {
+                        fontSize: 12,
+                        fontName: 'Montserrat'
+                    }
+                },
                 chartArea: {
-                    width: '95%', 
-                    height: '70%',
-                    top: '20%'
+                    width: '80%', 
+                    height: '60%'
                 },
                 colors: ["#ffd77a", "#4c94ff", "#ff6488", "#57b84c", "#ff5f59", "#ac3fff"],
                 legend: {
-                position:'labeled',
-                labeledValueText: 'both',
-                textStyle: {
-                    fontName: 'Montserrat',
-                    fontSize: 12
+                    position: 'top',
+                    labeledValueText: 'both',
+                    textStyle: {
+                        fontName: 'Montserrat',
+                        fontSize: 12
+                    }
                 }
-                },
-                sliceVisibilityThreshold: 0,
-                pieSliceText: "none"
             }
         },
         chartData() {
@@ -85,7 +89,8 @@ export default {
                 let billingPeriodObjects = [];
                 for(let report of this.costReport) {
                     const billingPeriod = Object.keys(report)[0];
-                    if(billingPeriod.split('-')[0].includes(billingPeriodStartDate) || billingPeriodObjects.length) {
+                    const reportStartDate = billingPeriod.split('-')[0];
+                    if(reportStartDate.includes(billingPeriodStartDate) || billingPeriodObjects.length) {
                         let billingPeriodObject = null;
                         if(this.groupBy === GROUP_BY_SERVICE_KEY) {
                             billingPeriodObject = report[billingPeriod].service;
@@ -94,19 +99,39 @@ export default {
                         } else {
                             billingPeriodObject = report[billingPeriod].account;
                         }
-                        billingPeriodObjects.push(billingPeriodObject);
+                        billingPeriodObjects.push({...billingPeriodObject, month: moment(reportStartDate).format('MMM YYYY')});
                     }
                     if(billingPeriod.split('-')[1].includes(billingPeriodEndDate)) {
                         break;
                     }
                 }
-                let groupByItemValuesMap = {};
+                let groupByItemValues = [
+                    ['Month']
+                ];
                 billingPeriodObjects.forEach(billingPeriodObject => {
-                    Object.keys(billingPeriodObject).forEach(groupByItemValue => {
-                        groupByItemValuesMap[groupByItemValue] = groupByItemValuesMap[groupByItemValue] ? [groupByItemValue, groupByItemValuesMap[groupByItemValue][1]+=billingPeriodObject[groupByItemValue][this.costType]] : [groupByItemValue, billingPeriodObject[groupByItemValue][this.costType]];
-                    });
+                    let groupByItemValue = [];
+                    groupByItemValue.push(billingPeriodObject.month);
+                    delete billingPeriodObject.month;
+                    for(let service in billingPeriodObject) {
+                        if(!groupByItemValues[0].includes(service)) {
+                            groupByItemValues[0].push(service);
+                            groupByItemValue[groupByItemValues[0].length - 1] = billingPeriodObject[service][this.costType];
+                        } else {
+                            const service_index = groupByItemValues[0].findIndex(existing_service => existing_service === service);
+                            groupByItemValue[service_index] = billingPeriodObject[service][this.costType];
+                        }
+                    }
+                    groupByItemValues.push(groupByItemValue);
                 });
-                return [[this.groupBy, 'Cost'], ...Object.values(groupByItemValuesMap)];
+                groupByItemValues = groupByItemValues.map(groupByItemValue => {
+                    const totalNumberOfServices = groupByItemValues[0].length;
+                    const numberOfServicesInArray = groupByItemValue.length;
+                    if(numberOfServicesInArray !== totalNumberOfServices) {
+                        return [...groupByItemValue, ...new Array(totalNumberOfServices - numberOfServicesInArray)];
+                    }
+                    return groupByItemValue;
+                });
+                return groupByItemValues;
             }
             return [];
         }

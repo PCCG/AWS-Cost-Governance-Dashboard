@@ -1,34 +1,65 @@
 <template>
     <v-container fluid v-if="awsAccount">
         <v-layout row wrap>
-            <v-flex xs2>
-                <img class="provider-logo" :src="require('@/assets/integrations/aws-logo.svg')" />
+            <v-flex xs3 sm2 md1>
+                <img class="provider-logo margin-top-small" :src="require('@/assets/integrations/aws-logo.svg')" />
             </v-flex>
-            <v-flex sm4 style="align-self: center" class="text-left">
-                <header class="alias-name title" style="font-family: 'Montserrat', sans-serif !important;">{{ awsAccount.aliasName }}</header>
+            <v-flex xs4 sm6 md7 style="align-self: center" class="margin-top-small">
+                <header class="truncate title padding-left-medium" style="font-family: 'Montserrat', sans-serif !important;">{{ awsAccount.aliasName }}</header>
             </v-flex>
-            <v-flex xs5 sm6 class="text-right" style="align-self: center">
-                <el-dropdown trigger="click" class="margin-right-large">
-                    <div class="el-dropdown-link">
-                        <i class="el-icon-date clickable-icon primary-color"/>
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                        <div class="margin-medium">
-                            <header>Billing Period</header>
-                            <el-date-picker
-                                v-model="billingPeriod"
-                                class="margin-top-small"
-                                type="monthrange"
-                                range-separator="-"
-                                :picker-options="pickerOptions"
-                                start-placeholder="Start Month"
-                                end-placeholder="End Month"
-                            >
-                            </el-date-picker>
-                        </div>
-                    </el-dropdown-menu>
-                </el-dropdown>  
-                <el-dropdown :hide-on-click="false" trigger="click" class="margin-right-small" style="vertical-align: top">
+            <v-flex xs5 sm4 style="align-self: center" class="flex-centered-end">
+                <el-tooltip transition="none" content="Initiate Collection">
+                    <i class="clickable-icon el-icon-video-play primary-color padding-right-small" role="button" @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"/>
+                </el-tooltip>
+                <el-tooltip transition="none" content="View Initiated Collections">
+                    <el-popover
+                        placement="bottom"
+                        width="600"
+                        trigger="click"
+                    >
+                        <i class="el-icon-arrow-down clickable primary-color margin-top-small" slot="reference"/>
+                        <el-card shadow="never" class="account-details scrollbar">
+                            <el-table
+                                :data="awsAccountCollectionStatus"
+                                empty-text="Collection hasn't been initiated!">
+                                <el-table-column label="Collection Status" align="left">
+                                    <template v-slot="{ row }">
+                                        <span v-if="row.collectionStatus === 'success'" class="collection-status"><i class="el-message-box__status collection-status__icon el-icon-success"/> Success</span>
+                                        <span v-else class="collection-status"><i class="el-message-box__status collection-status__icon el-icon-error"/> Failed</span>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="Initiated" align="center">
+                                    <template v-slot="{ row }">
+                                        {{ moment(moment.utc(row.timestamp).toDate()).local().format("lll") }}
+                                    </template>
+                                </el-table-column>
+                                <el-table-column label="Records Processed" property="number_of_records" align="center"></el-table-column>
+                            </el-table>
+                        </el-card>
+                    </el-popover>
+                </el-tooltip>
+                <el-tooltip content="Edit Integration" transition="none">
+                    <i class="clickable-icon el-icon-edit-outline primary-color padding-right-small" role="button"/>
+                </el-tooltip>
+                <el-tooltip content="Delete Integration" transition="none">
+                    <i class="clickable-icon el-icon-delete primary-color padding-right-small" role="button" @click="DELETE_AWS_ACCOUNT(awsAccount._id)"/>
+                </el-tooltip>
+            </v-flex>
+            <v-flex xs12 class="flex-centered-start margin-top-medium">
+                <div class="flex-centered-start">
+                    <el-date-picker
+                        v-model="billingPeriod"
+                        class="margin-top-small"
+                        type="monthrange"
+                        range-separator="-"
+                        :picker-options="pickerOptions"
+                        start-placeholder="Start Month"
+                        end-placeholder="End Month"
+                    >
+                    </el-date-picker>
+                    <i class="el-icon-question primary-color margin-top-small margin-left-small"/>
+                </div>
+                <el-dropdown :hide-on-click="false" trigger="click" class="margin-top-small margin-left-large">
                     <div class="el-dropdown-link">
                         <v-icon class="primary-color clickable-icon" title="Filter By">mdi-filter</v-icon>
                     </div>
@@ -40,46 +71,17 @@
                                 <el-radio v-model="costType" :label="UNBLENDED_COST_KEY">Unblended Costs</el-radio>
                             </div>
                             <header class="margin-top-large">Filter By</header>
-                            <div class="margin-top-small">
+                            <div class="margin-top-small" style="display: flex; justify-content: space-between;">
                                 <el-dropdown-item style="padding-left: 0" :class="{'primary-color' : GROUP_BY_ITEM === groupBy}" :key="GROUP_BY_ITEM" v-for="GROUP_BY_ITEM in groupByOptions" @click.native="groupBy = GROUP_BY_ITEM">{{ GROUP_BY_ITEM }} <i v-if="groupBy === GROUP_BY_ITEM" class="el-icon-check primary-color"/></el-dropdown-item>
                             </div>
                         </div>
                     </el-dropdown-menu>
                 </el-dropdown>  
-                <el-dropdown trigger="click" class="margin-left-medium">
-                    <div class="el-dropdown-link">
-                        <i class="el-icon-s-tools clickable-icon primary-color"/>
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item class="integration-option primary-color" :key="option.name" v-for="option in awsAccountOptions" @click.native="option.action(awsAccount._id)">
-                            <i :class="`${option.icon} integration-option__icon`" :title="option.name" role="button"/> <div>{{ option.name }}</div>
-                        </el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>  
             </v-flex>
-            <v-flex sm12 md7 class="margin-top-large">
-                <el-card shadow="never" class="account-details scrollbar">
-                    <el-table
-                        :data="awsAccountCollectionStatus"
-                        empty-text="Collection hasn't been initiated!"
-                        style="width: 100%;">
-                        <el-table-column label="Collection Status" align="left">
-                            <template v-slot="{ row }">
-                                <span v-if="row.collectionStatus === 'success'" class="collection-status"><i class="el-message-box__status collection-status__icon el-icon-success"/> Success</span>
-                                <span v-else class="collection-status"><i class="el-message-box__status collection-status__icon el-icon-error"/> Failed</span>
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="Initiated" align="center">
-                            <template v-slot="{ row }">
-                                {{ moment(moment.utc(row.timestamp).toDate()).local().format("lll") }}
-                            </template>
-                        </el-table-column>
-                        <el-table-column label="Records Processed" property="number_of_records" align="center"></el-table-column>
-                    </el-table>
+            <v-flex xs12 md5 class="margin-top-large">
+                <el-card shadow="never" v-if="billingPeriod && costReport && !is_loading">
+                    <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
                 </el-card>
-            </v-flex>
-            <v-flex sm12 md5 class="margin-top-large">
-                <cost-breakdown-pie-chart height="40vh" class="account-details scrollbar" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" v-if="billingPeriod && costReport && !is_loading" :costReport="costReport"/>
                 <el-card v-else-if="(!costReport || !costReport.length) && !is_loading" shadow="never" class="account-details__initiate-collection scrollbar text-center">
                     <p class="card-information">
                         Collection hasn't been initiated! Initiating collections helps view detailed reports
@@ -87,7 +89,19 @@
                     </p>
                     <el-button type="primary" @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)">Start Collection <i style="font-size: 18px; vertical-align: text-bottom" class="el-icon-video-play"/></el-button>
                 </el-card>
-            </v-flex>  
+            </v-flex> 
+            <v-flex xs12 md7 class="margin-top-large">
+                <el-card shadow="never" v-if="billingPeriod && costReport && !is_loading">
+                    <cost-breakdown-bar-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
+                </el-card>
+                <el-card v-else-if="(!costReport || !costReport.length) && !is_loading" shadow="never" class="account-details__initiate-collection scrollbar text-center">
+                    <p class="card-information">
+                        Collection hasn't been initiated! Initiating collections helps view detailed reports
+                        w.r.t costs across your AWS accounts
+                    </p>
+                    <el-button type="primary" @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)">Start Collection <i style="font-size: 18px; vertical-align: text-bottom" class="el-icon-video-play"/></el-button>
+                </el-card>
+            </v-flex>   
         </v-layout>
     </v-container>    
 </template>
@@ -99,6 +113,7 @@ import moment from 'moment';
 import aggregationClient from "@/rest/aggregation/aws/aggregationClient";
 
 import CostBreakdownPieChart from "./components/CostBreakdownPieChart.vue";
+import CostBreakdownBarChart from "./components/CostBreakdownBarChart.vue";
 
 //constants
 const BLENDED_COST_KEY = 'blended_cost';
@@ -127,7 +142,8 @@ export default {
         }
     },
     components: {
-        CostBreakdownPieChart
+        CostBreakdownPieChart,
+        CostBreakdownBarChart
     },
     methods: {
         ...mapActions('awsIntegrations', [
@@ -141,13 +157,6 @@ export default {
         }
     },
     computed: {
-        awsAccountOptions() {
-            return [
-                {name: 'Delete Integration', icon: 'el-icon-video-play', action: this.DELETE_AWS_ACCOUNT},
-                {name: 'Start Collection', icon: 'el-icon-edit-outline', action: this.START_AWS_ACCOUNT_AGGREGATION},
-                {name: 'Edit Integration', icon: 'el-icon-delete', action: () => {}}
-            ];
-        },
         pickerOptions() {
             const vm = this;
             return {
@@ -178,8 +187,7 @@ export default {
 
 <style lang="scss" scoped>
     .account-details {
-        min-height: 47vh;
-        max-height: 47vh;
+        height: 47vh;
         overflow: scroll;
         &__initiate-collection {
             @extend .account-details;
@@ -187,23 +195,15 @@ export default {
             align-items: center;
             justify-content: center;
         }
+        .el-table thead {
+            font-size: 10px !important;
+        }
     }
 
     .cost-filter {
         &__header {
             font-size: 14px;
             color: rgba(61, 57, 57, 0.781);
-        }
-    }
-
-    .integration-option {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        font-size: 15px;
-        padding: 0.5rem;
-        &__icon {
-            font-size: 18px;
         }
     }
 
@@ -218,12 +218,11 @@ export default {
     }
 
     .provider-logo {
-        width: 90%;
-        height: 85%;
         vertical-align: middle;
+        width: 100%;
     }
 
-    .alias-name {
+    .truncate {
         vertical-align: middle;
         white-space: nowrap;
         overflow: hidden;
@@ -236,6 +235,13 @@ export default {
         &__icon {
             font-size: 15px !important;
             margin-right: 5px;
+        }
+    }
+
+    .el-dropdown-menu__item {
+        background: none !important;
+        :hover {
+            @extend .el-dropdown-menu__item;
         }
     }
 </style>

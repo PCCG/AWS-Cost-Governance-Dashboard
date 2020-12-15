@@ -8,9 +8,15 @@
                 <header class="alias-name title" style="font-family: 'Montserrat', sans-serif !important;">{{ account.aliasName }}</header>
             </v-flex>
             <v-flex xs12 sm6 class="text-center text-sm-right" style="align-self: center">
-                <i class="clickable-icon el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
-                <i class="clickable-icon el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
-                <i class="clickable-icon el-icon-delete primary-color" title="Delete Integration" role="button"/>
+                <el-tooltip content="Initiate Collection" placement="bottom">
+                    <i class="clickable-icon el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
+                </el-tooltip>
+                <el-tooltip content="Edit Integration" placement="bottom">
+                    <i class="clickable-icon el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
+                </el-tooltip>
+                <el-tooltip content="Delete Integration" placement="bottom">
+                    <i class="clickable-icon el-icon-delete primary-color" title="Delete Integration" role="button"/>
+                </el-tooltip>
             </v-flex>
         </v-layout>
     </v-container>

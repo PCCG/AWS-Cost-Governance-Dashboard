@@ -224,6 +224,66 @@ header {
   line-height: 2rem !important;
 }
 
+.padding-top-small {
+  padding-top: 0.5rem;
+}
+
+.padding-bottom-small {
+  padding-bottom: 0.5rem;
+}
+
+.padding-left-small {
+  padding-left: 0.5rem;
+}
+
+.padding-right-small {
+  padding-right: 0.5rem;
+}
+
+.padding-top-medium {
+  padding-top: 1rem;
+}
+
+.padding-bottom-medium {
+  padding-bottom: 1rem;
+}
+
+.padding-left-medium {
+  padding-left: 1rem;
+}
+
+.padding-right-medium {
+  padding-right: 1rem;
+}
+
+.padding-top-large {
+  padding-top: 1.5rem;
+}
+
+.padding-bottom-large {
+  padding-bottom: 1.5rem;
+}
+
+.padding-left-large {
+  padding-left: 1.5rem;
+}
+
+.padding-right-large {
+  padding-right: 1.5rem;
+}
+
+.padding-small {
+  padding: 0.5rem;
+}
+
+.padding-medium {
+  padding: 1rem;
+}
+
+.padding-large {
+  padding: 1.5rem;
+}
+
 .margin-top-small {
   margin-top: 0.5rem;
 }
@@ -282,5 +342,34 @@ header {
 
 .margin-large {
   margin: 1.5rem;
+}
+
+.cursor-pointer {
+  cursor: pointer !important;
+}
+
+.flex-centered {
+  display: flex;
+  align-items: center;
+}
+
+.flex-centered-space-between {
+  @extend .flex-centered;
+  justify-content: space-between;
+}
+
+.flex-centered-end {
+  @extend .flex-centered;
+  justify-content: flex-end;
+}
+
+.flex-centered-start {
+  @extend .flex-centered;
+  justify-content: flex-start;
+}
+
+.flex-centered-center {
+  @extend .flex-centered;
+  justify-content: center;
 }
 </style>
