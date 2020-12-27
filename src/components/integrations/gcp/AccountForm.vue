@@ -40,7 +40,7 @@ export default {
           {required: true, message: 'Please specify an alias', trigger: 'blur'}
         ],
         bigQueryDataset: [
-          {required: true, message: 'Please specify the BigQuery Dataset', trigger: 'blur'}
+          {required: true, message: 'Please specify the BigQuery Dataset ID', trigger: 'blur'}
         ]
       }
     }
@@ -67,9 +67,6 @@ export default {
               reject(new Error("Invalid Service Account key file"));
             }
           }
-          vm.gcpAccountFormModel.clientEmail = serviceAccountCredentials.client_email;
-          vm.gcpAccountFormModel.privateKey = serviceAccountCredentials.private_key;
-          vm.gcpAccountFormModel.projectId = serviceAccountCredentials.project_id;
           resolve();
         }
         serviceAccountKeyFileReader.readAsText(serviceAccountKeyFile);
