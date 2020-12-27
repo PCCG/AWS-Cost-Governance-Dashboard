@@ -130,16 +130,6 @@ export default {
       }
     },
     computed: {
-      enableIntegrationDialog: {
-        get () {
-          const vm = this;
-          return vm.integrateAwsAccount;
-        },
-        set () {
-          const vm = this;
-          vm.cancelIntegration();
-        }
-      },
       isNextStepAvailable () {
         const vm = this;
         const currentStep = vm.getCurrentStep();
@@ -173,14 +163,14 @@ export default {
             vm.nextStep();
           } else {
             if (vm.selectedProvider === vm.PROVIDER_AWS_NAME) {
-              vm.INTEGRATE_AWS_ACCOUNT(vm.accountIntegrationSteps);
+              await vm.INTEGRATE_AWS_ACCOUNT(vm.accountIntegrationSteps);
             } else {
-              vm.INTEGRATE_GCP_ACCOUNT(vm.accountIntegrationSteps);
+              await vm.INTEGRATE_GCP_ACCOUNT(vm.accountIntegrationSteps);
             }
             vm.cancelIntegration();
           }
         } catch (error) {
-          vm.SET_ERROR_MESSAGE(error.message);
+          vm.SET_ERROR_MESSAGE("Integration was unsuccessful");
         }
       },
       getCurrentStep () {

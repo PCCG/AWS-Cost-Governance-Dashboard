@@ -9,7 +9,7 @@
             </v-flex>
             <v-flex xs12 sm6 class="text-center text-sm-right" style="align-self: center">
                 <el-tooltip content="Initiate Collection" placement="bottom">
-                    <i class="clickable-icon el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
+                    <i @click="START_GCP_ACCOUNT_AGGREGATION(account._id)" class="clickable-icon el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
                 </el-tooltip>
                 <el-tooltip content="Edit Integration" placement="bottom">
                     <i class="clickable-icon el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
@@ -34,6 +34,7 @@ export default {
     methods: {
         ...mapActions('gcpIntegrations', [
             'DELETE_GCP_ACCOUNT',
+            'START_GCP_ACCOUNT_AGGREGATION'
         ])
     }
 }

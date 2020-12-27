@@ -18,8 +18,6 @@
 <script>
 import { mapMutations } from 'vuex';
 
-const PROCESSING_COMPLETE_EVENT = 'processing-complete';
-
 export default {
   data: () => ({
     fileName: null,
@@ -35,7 +33,7 @@ export default {
       type: String
     },
     processingfunction: {
-      default: null,
+      default: () => {},
       type: Function
     }
   },
@@ -47,20 +45,13 @@ export default {
       const vm = this;
       vm.fileName = null; //The user uploaded a new file
       const uploadedFile = $event.target.files[0];
-      const processingFunction = vm.processingfunction;
-      if (processingFunction) {
-        try {
-          const processedContent = await processingFunction(uploadedFile);
-          vm.fileName = uploadedFile.name; //Indicates that the file was processed successfully
-          vm.$emit(PROCESSING_COMPLETE_EVENT, processedContent);
-        } catch (e) {
-          vm.SET_ERROR_MESSAGE(e.message);
-        }
-        return;
+      try {
+        await vm.processingfunction(uploadedFile);
+        vm.fileName = uploadedFile.name; //Indicates that the file was processed successfully
+      } catch (e) {
+        vm.SET_ERROR_MESSAGE(e.message);
       }
-      //If the parent component does not supply this component with a function to process the contents of the file,
-      //send the parent component the "File"
-      vm.$emit(PROCESSING_COMPLETE_EVENT, uploadedFile);
+      return;
     },
     clearInput () {
       const vm = this;

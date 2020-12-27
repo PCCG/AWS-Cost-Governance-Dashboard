@@ -3,14 +3,14 @@
     <el-form-item label="Alias Name" prop="aliasName">
       <el-input v-model="gcpAccountFormModel.aliasName" name="Alias Name"></el-input>
     </el-form-item>
-    <el-form-item label="Bucket Name" prop="cloudStorageBucket">
-      <el-input v-model="gcpAccountFormModel.cloudStorageBucket" name="Bucket Name"></el-input>
+    <el-form-item label="BigQuery Dataset ID" prop="bigQueryDataset">
+      <el-input v-model="gcpAccountFormModel.bigQueryDataset" name="BigQuery Dataset ID"></el-input>
     </el-form-item>
-    <el-form-item label="Report Prefix" prop="billingReportPrefix">
-      <el-input v-model="gcpAccountFormModel.billingReportPrefix" name="Report Prefix"></el-input>
+    <el-form-item label="Polling Interval (in hours)" prop="pollingInterval">
+      <el-input-number controls-position="right" name="Polling interval" :min="1" v-model="gcpAccountFormModel.pollingInterval"></el-input-number>
     </el-form-item>
     <el-form-item>
-      <upload-button :processingfunction="parseServiceAccountKeyFile" @processing-complete="addServiceAccountKeyFileContentToFormModel" value="Upload Service Account Key File" accept="application/JSON"/>
+      <upload-button :processingfunction="parseServiceAccountKeyFile" value="Upload Service Account Key File" accept="application/JSON"/>
     </el-form-item>
     <slot name="submit" :validateForm="validateFormData" :loading="loading" :gcpAccountFormModel="gcpAccountFormModel"></slot>
   </el-form>
@@ -18,6 +18,8 @@
 
 <script>
 import uploadButton from '@/components/common/uploadButton'
+
+import camelCase from 'lodash/camelCase';
 
 export default {
   // data: () => ({}) - Do not make use of this syntax here... We're referring to "this" inside this block.
@@ -28,16 +30,17 @@ export default {
       loading: false,
       gcpAccountFormModel: {
         aliasName: '',
-        cloudStorageBucket: '',
-        billingReportPrefix: '',
-        serviceAccountKeyFile: null
+        privateKey: '',
+        clientEmail: '',
+        bigQueryDataset: '',
+        pollingInterval: null
       },
       gcpAccountFormRules: {
         aliasName: [
           {required: true, message: 'Please specify an alias', trigger: 'blur'}
         ],
-        cloudStorageBucket: [
-          {required: true, message: 'Please specify the name of the bucket', trigger: 'blur'}
+        bigQueryDataset: [
+          {required: true, message: 'Please specify the BigQuery Dataset', trigger: 'blur'}
         ]
       }
     }
@@ -53,11 +56,21 @@ export default {
       return new Promise((resolve, reject) => {
         const serviceAccountKeyFileReader = new FileReader();
         serviceAccountKeyFileReader.onload = () => {
-          try {
-            resolve(JSON.parse(serviceAccountKeyFileReader.result));
-          } catch (e) {
-            reject(new Error('Unable to parse the provided service account key file'))
+          const vm = this;
+          const serviceAccountKeyFileRequiredFields = ["client_email", "private_key", "project_id"];
+          const serviceAccountCredentials = JSON.parse(serviceAccountKeyFileReader.result);
+          for(let field of serviceAccountKeyFileRequiredFields) {
+            const fieldValue = serviceAccountCredentials[field];
+            if(fieldValue) {
+              vm.gcpAccountFormModel[camelCase(field)] = fieldValue;
+            } else {
+              reject(new Error("Invalid Service Account key file"));
+            }
           }
+          vm.gcpAccountFormModel.clientEmail = serviceAccountCredentials.client_email;
+          vm.gcpAccountFormModel.privateKey = serviceAccountCredentials.private_key;
+          vm.gcpAccountFormModel.projectId = serviceAccountCredentials.project_id;
+          resolve();
         }
         serviceAccountKeyFileReader.readAsText(serviceAccountKeyFile);
       })
@@ -72,12 +85,8 @@ export default {
         vm.loading = true;
         vm.$refs[vm.formName].validate((valid) => {
           if (valid) {
-            if (!vm.gcpAccountFormModel.serviceAccountKeyFile) {
-              reject(new Error("Please upload the service account key file"));
-            } else {
-              vm.loading = false;
-              resolve(vm.gcpAccountFormModel);
-            }
+            vm.loading = false;
+            resolve(vm.gcpAccountFormModel);
           } else {
             vm.loading = false;
             reject(new Error("Please specify valid values against the fields"));
