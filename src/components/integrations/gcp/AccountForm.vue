@@ -6,6 +6,9 @@
     <el-form-item label="BigQuery Dataset ID" prop="bigQueryDataset">
       <el-input v-model="gcpAccountFormModel.bigQueryDataset" name="BigQuery Dataset ID"></el-input>
     </el-form-item>
+    <el-form-item label="Billing Account ID" prop="billingAccount">
+      <el-input v-model="gcpAccountFormModel.billingAccount" name="Billing Account ID"></el-input>
+    </el-form-item>
     <el-form-item label="Polling Interval (in hours)" prop="pollingInterval">
       <el-input-number controls-position="right" name="Polling interval" :min="1" v-model="gcpAccountFormModel.pollingInterval"></el-input-number>
     </el-form-item>
@@ -33,6 +36,7 @@ export default {
         privateKey: '',
         clientEmail: '',
         bigQueryDataset: '',
+        billingAccount: '',
         pollingInterval: null
       },
       gcpAccountFormRules: {
@@ -41,6 +45,9 @@ export default {
         ],
         bigQueryDataset: [
           {required: true, message: 'Please specify the BigQuery Dataset ID', trigger: 'blur'}
+        ],
+        billingAccount: [
+          {required: true, message: 'Please specify the Billing Account ID', trigger: 'blur'}
         ]
       }
     }
