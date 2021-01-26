@@ -10,12 +10,13 @@ import store from "./store";
 
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
+import "./assets/styles/tailwind.css";
 
 Vue.config.productionTip = false;
 
 new Vue({
-  router,
-  vuetify,
-  store,
-  render: (h) => h(App),
+	router,
+	vuetify,
+	store,
+	render: (h) => h(App),
 }).$mount("#app");
