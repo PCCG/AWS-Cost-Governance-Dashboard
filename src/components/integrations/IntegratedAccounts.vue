@@ -1,26 +1,28 @@
 <template>
-  <v-container>
+  <v-container class="mt-5 px-10">
     <v-layout row wrap>
-      <v-flex xs12 sm6 v-for="account in integratedAccounts" :key="account._id">
+      <v-flex class="my-2" xs12 sm6 v-for="account in integratedAccounts" :key="account._id">
         <el-card :class="`integrated-account-card integrated-account-card__${cloudProvider(account)}`" shadow="always">
           <v-container fluid>
             <v-layout row wrap>
               <v-flex xs6>
-                <header class="integrated-account-card-item" @click="openAccountDetails(account._id)"><span class="clickable">{{account.aliasName}}</span></header>
+                <header class="integrated-account-card-item" @click="openAccountDetails(account._id)">
+                  <span class="clickable">
+                    {{account.aliasName}}
+                  </span>
+                </header>
               </v-flex>
-              <v-flex xs6 class="text-right" v-if="cloudProvider(account) === 'AWS'">
+              <v-flex xs6 class="justify-end" v-if="cloudProvider(account) === 'AWS'">
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" @click="START_AWS_ACCOUNT_AGGREGATION(account._id)" title="Start Aggregation" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_AWS_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
               </v-flex>
-              <v-flex xs6 class="text-right" v-else>
+              <v-flex xs6 class="justify-end" v-else>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-edit-outline primary-color" title="Edit Integration" role="button"/>
                 <i class="clickable-icon integrated-account-card__icon-size el-icon-delete primary-color" @click="DELETE_GCP_ACCOUNT(account._id)" title="Delete Integration" role="button"/>
               </v-flex>
-              <v-flex xs12 class="text-left" style="align-self: center">
-                <el-tag size="mini" effect="plain">{{cloudProvider(account)}} Account</el-tag>
-              </v-flex>
+              <el-tag class="mt-1" size="mini" effect="plain">{{cloudProvider(account)}} Account</el-tag>
             </v-layout>
           </v-container>
         </el-card>
@@ -78,8 +80,8 @@ export default {
   $aws-color--primary: #f91;
 
   .integrated-account-card {
-    margin: 2% !important;
-    align-self: center !important;
+    width: 80%;
+    height: 6.5rem;
     &__GCP {
       border-left: 4px solid $gcp-color--primary;
     }

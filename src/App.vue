@@ -48,8 +48,8 @@
           {{errorMessage}}
         </template>
       </common-dialog>
-      <v-content style="background: rgba(175, 180, 200, 0.1);">
-        <router-view style="min-height: 90.5vh; padding: 2rem; padding-top: 1rem"/>
+      <v-content style="background: rgba(175, 180, 200, 0.1)">
+        <router-view style="min-height: 90.5vh" class="px-10 pt-10"/>
       </v-content>
     </div>
   </v-app>

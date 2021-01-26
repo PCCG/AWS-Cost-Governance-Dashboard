@@ -63,7 +63,7 @@ export default {
                 chartArea: {
                     width: '95%', 
                     height: '70%',
-                    top: '20%'
+                    top: '47'
                 },
                 colors: ["#ffd77a", "#4c94ff", "#ff6488", "#57b84c", "#ff5f59", "#ac3fff"],
                 legend: {

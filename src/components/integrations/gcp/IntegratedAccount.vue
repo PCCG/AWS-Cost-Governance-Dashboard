@@ -7,7 +7,7 @@
             <v-flex xs12 sm5 style="align-self: center" class="text-center text-sm-left">
                 <header class="alias-name title" style="font-family: 'Montserrat', sans-serif !important;">{{ account.aliasName }}</header>
             </v-flex>
-            <v-flex xs12 sm6 class="text-center text-sm-right" style="align-self: center">
+            <v-flex xs12 sm6 class="text-center justify-end" style="align-self: center">
                 <el-tooltip content="Initiate Collection" placement="bottom">
                     <i @click="START_GCP_ACCOUNT_AGGREGATION(account._id)" class="clickable-icon el-icon-video-play primary-color" title="Start Aggregation" role="button"/>
                 </el-tooltip>

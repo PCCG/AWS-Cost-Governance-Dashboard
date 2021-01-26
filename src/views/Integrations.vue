@@ -4,7 +4,7 @@
       <v-flex xs12 sm6>
         <header class="title" style="font-family: 'Montserrat', sans-serif !important">PUBLIC CLOUD INTEGRATIONS</header>
       </v-flex>
-      <v-flex xs12 sm6 class="text-left text-sm-right" style="align-self: center">
+      <v-flex xs12 sm6 class="justify-end">
         <i class="el-icon-plus primary-color clickable-icon" title="Add an account" @click="integrateAccount = true" role="button"></i>
         <i class="el-icon-refresh primary-color clickable-icon" title="Refresh" @click="fetchIntegratedAccounts" role="button"></i>
         <i class="el-icon-help primary-color clickable-icon" title="Help" @click="showHelpDialogForRoute(routeName)" role="button"></i>
