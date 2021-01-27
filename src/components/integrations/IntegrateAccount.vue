@@ -15,9 +15,9 @@
           highlight-current-row
           @current-change="setSelectedProvider"
           style="width: 100%; font-weight: 600">
-          <el-table-column align="center">
+          <el-table-column>
             <template v-slot="{ row }">
-              <img align="center" height="48px" :src="row.logo" class="image">
+              <img :class="row.class" align="center" class="h-14" :src="row.logo"/>
             </template>
           </el-table-column>
           <el-table-column
@@ -118,8 +118,8 @@ export default {
         gcpAccountIntegrationSteps,
         accountIntegrationSteps: null,
         supportedProviders: [
-          {name: PROVIDER_AWS_NAME, logo: require('@/assets/integrations/aws-logo.svg')},
-          {name: PROVIDER_GCP_NAME, logo: require('@/assets/integrations/gcp-logo.png')}
+          {name: PROVIDER_GCP_NAME, class: "gcp", logo: require('@/assets/integrations/gcp-logo.png')},
+          {name: PROVIDER_AWS_NAME, class: "aws", logo: require('@/assets/integrations/aws-logo.svg')}
         ],
         selectedProvider: null
       }
@@ -198,6 +198,13 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  img {
+    &.aws {
+      margin-left: 1rem;
+    }
+    &.gcp {
+      margin-left: 3.5rem;
+    }
+  }
 </style>
