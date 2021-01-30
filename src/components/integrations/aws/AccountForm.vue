@@ -85,6 +85,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+  .el-form {
+    width: 100%;
+  }
 </style>
