@@ -1,0 +1,11 @@
+{
+  "extends": [
+    // add more generic rulesets here
+    // 'eslint:recommended',
+    "plugin:vue/recommended"
+  ],
+  "rules": {
+    // override/add rules settings here
+    "vue/no-console": "off"
+  }
+}

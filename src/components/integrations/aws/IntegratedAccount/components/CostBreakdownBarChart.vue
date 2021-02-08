@@ -12,7 +12,6 @@
 <script>
 //components
 import { GChart } from 'vue-google-charts';
-import moment from 'moment';
 
 // const GROUP_BY_ACCOUNT_KEY = 'Account';
 const GROUP_BY_REGION_KEY = 'Region';
@@ -85,8 +84,8 @@ export default {
         },
         chartData() {
             if(this.billingPeriod) {
-                const billingPeriodStartDate = new Date(this.billingPeriod[0]).toLocaleDateString();
-                const billingPeriodEndDate = new Date(this.billingPeriod[1]).toLocaleDateString();
+                const billingPeriodStartDate = moment(this.billingPeriod[0]).format("MM/DD/YYYY");
+                const billingPeriodEndDate = moment(this.billingPeriod[1]).format("MM/DD/YYYY");
                 let billingPeriodObjects = [];
                 for(let report of this.costReport) {
                     const billingPeriod = Object.keys(report)[0];
@@ -100,6 +99,7 @@ export default {
                         } else {
                             billingPeriodObject = report[billingPeriod].account;
                         }
+                        console.log(reportStartDate, moment(reportStartDate).format('MMM YYYY'));
                         billingPeriodObjects.push({...billingPeriodObject, month: moment(reportStartDate).format('MMM YYYY')});
                     }
                     if(billingPeriod.split('-')[1].includes(billingPeriodEndDate)) {

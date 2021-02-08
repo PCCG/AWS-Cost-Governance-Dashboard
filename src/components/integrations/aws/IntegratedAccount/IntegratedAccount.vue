@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid v-if="awsAccount">
+    <v-container fluid v-if="awsAccount && !is_loading">
         <v-layout row wrap>
             <v-flex xs3 sm2 md1>
                 <img class="provider-logo" :src="require('@/assets/integrations/aws-logo.svg')" />
@@ -20,7 +20,7 @@
                         <i class="el-icon-arrow-down clickable primary-color pt-2" slot="reference"/>
                         <el-card shadow="never" class="account-details scrollbar">
                             <el-table
-                                :data="awsAccountCollectionStatus"
+                                :data="collectionStatuses"
                                 empty-text="Collection hasn't been initiated!">
                                 <el-table-column label="Collection Status" align="left">
                                     <template v-slot="{ row }">
@@ -78,37 +78,35 @@
                     </el-dropdown-menu>
                 </el-dropdown>  
             </v-flex>
-            <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
-                <el-card shadow="always" v-if="billingPeriod && costReport && !is_loading">
-                    <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
-                </el-card>
-                <el-card v-else-if="(!costReport || !costReport.length) && !is_loading" shadow="always" class="account-details__initiate-collection scrollbar text-center">
-                    <p class="card-information">
-                        Collection hasn't been initiated! Initiating collections helps view detailed reports
-                        w.r.t costs across your AWS accounts
-                    </p>
-                    <el-button type="primary" @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)">Start Collection <i style="font-size: 18px; vertical-align: text-bottom" class="el-icon-video-play"/></el-button>
-                </el-card>
-            </v-flex> 
-            <v-flex xs12 md7 class="mt-7 cost-breakdown-chart">
-                <el-card shadow="always" v-if="billingPeriod && costReport && !is_loading">
-                    <cost-breakdown-bar-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
-                </el-card>
-                <el-card v-else-if="(!costReport || !costReport.length) && !is_loading" shadow="always" class="account-details__initiate-collection scrollbar text-center">
-                    <p class="card-information">
-                        Collection hasn't been initiated! Initiating collections helps view detailed reports
-                        w.r.t costs across your AWS accounts
-                    </p>
-                    <el-button type="primary" @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)">Start Collection <i style="font-size: 18px; vertical-align: text-bottom" class="el-icon-video-play"/></el-button>
-                </el-card>
-            </v-flex>   
+            <v-flex xs12 class="text-center" v-if="!collectionStatuses.length">
+                Collection hasn't been initiated yet!
+                <el-button type="primary" 
+                    @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"
+                >
+                    Start Collection 
+                    <i style="font-size: 18px; vertical-align: text-bottom" 
+                        class="el-icon-video-play"
+                    />
+                </el-button>
+            </v-flex>
+            <v-layout row v-else>
+                <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
+                    <el-card shadow="always">
+                        <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
+                    </el-card>
+                </v-flex> 
+                <v-flex xs12 md7 class="mt-7 cost-breakdown-chart">
+                    <el-card shadow="always">
+                        <cost-breakdown-bar-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
+                    </el-card>
+                </v-flex>  
+            </v-layout>
         </v-layout>
     </v-container>    
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex';
-import moment from 'moment';
 
 import aggregationClient from "@/rest/aggregation/aws/aggregationClient";
 
@@ -125,9 +123,8 @@ const GROUP_BY_SERVICE_KEY = 'Service';
 
 export default {
     data: () => ({
-        awsAccountCollectionStatus: [],
         moment,
-        costReport: null,
+        processedData: null,
         is_loading: false,
         costType: BLENDED_COST_KEY,
         billingPeriod: null,
@@ -148,13 +145,8 @@ export default {
     methods: {
         ...mapActions('awsIntegrations', [
             'START_AWS_ACCOUNT_AGGREGATION',
-            'DELETE_AWS_ACCOUNT',
-            'FETCH_COLLECTION_STATUS'
+            'DELETE_AWS_ACCOUNT'
         ]),
-        async fetchCollectionStatuses (accountId) {
-            const vm = this;
-            vm.awsAccountCollectionStatus = await vm.FETCH_COLLECTION_STATUS(accountId);
-        }
     },
     computed: {
         pickerOptions() {
@@ -170,16 +162,21 @@ export default {
         }),
         awsAccount () {
             const vm = this;
-            const awsAccount = vm.account ? vm.account : vm.awsIntegratedAccounts[vm.$route.params.accountId];
-            vm.fetchCollectionStatuses(awsAccount._id);
+            const awsAccount = vm.account || vm.awsIntegratedAccounts[vm.$route.params.accountId];
             return awsAccount;
+        },
+        collectionStatuses() {
+            return this.processedData ? this.processedData.collectionStatuses : [];
+        },
+        costReport() {
+            return this.processedData ? this.processedData.costReport : [];
         }
     },
     async created () {
         const vm = this;
         vm.is_loading = true;
         const processedData = await aggregationClient.fetchProcessedData(vm.awsAccount._id);
-        vm.costReport = processedData.costReport;
+        vm.processedData = processedData;
         vm.is_loading = false;
     }
 }

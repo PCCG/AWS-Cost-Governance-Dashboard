@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="integrations__integrate-account">
     <el-dialog
       :visible="true"
       @close="cancelIntegration"
@@ -14,6 +14,7 @@
           :data="supportedProviders"
           highlight-current-row
           @current-change="setSelectedProvider"
+          class="cursor-pointer"
           style="width: 100%; font-weight: 600">
           <el-table-column>
             <template v-slot="{ row }">
@@ -32,10 +33,11 @@
     </el-dialog>
     <el-dialog
       :visible="true"
+      class="integrations__integrate-account--aws"
       v-if="getCurrentStep() > 0 && selectedProvider === PROVIDER_AWS_NAME"
       :close-on-click-modal="false"
       @close="cancelIntegration"
-      width="55%">
+      width="80%">
         <template v-slot:title>
           <header class="card-title">Integrate AWS Account</header>
         </template>
@@ -45,14 +47,13 @@
               <header>{{awsAccountIntegrationSteps[integrationCurrentStep].getDescription()}}</header>
               <br/>
             </v-flex>
-            <v-flex xs4>
-              <el-steps :active="getCurrentStep()" direction="vertical" align-center style="margin-top: 20px">
+            <v-flex xs4 class="pt-8">
+              <el-steps :active="getCurrentStep()" direction="vertical" align-center>
                 <el-step v-for="accountIntegrationStep in awsAccountIntegrationSteps" :key="accountIntegrationStep.getName()" :title="accountIntegrationStep.getName()" :description="accountIntegrationStep.getDescription()"></el-step>
               </el-steps>
             </v-flex>
-            <v-flex xs1></v-flex>
-            <v-flex xs7>
-              <aws-account-form :integrationAccountStep="awsAccountIntegrationSteps[1]" v-show="getCurrentStep() === 1">
+            <v-flex xs8 class="pt-5">
+              <aws-account-form  class="pt-1 integrations__integrate-account--aws__form" :integrationAccountStep="awsAccountIntegrationSteps[1]" v-show="getCurrentStep() === 1">
                 <template v-slot:fields="awsAccountForm">
                   <el-form-item label="Alias Name" prop="aliasName" :rules="[{required: true, message: 'Please specify an Alias', trigger: 'blur'}]">
                     <el-input v-model="awsAccountForm.awsAccountFormModel.aliasName" name="Alias Name"></el-input>
@@ -62,7 +63,7 @@
                   </el-form-item>
                 </template>
               </aws-account-form>
-              <aws-cur-form :integrationAccountStep="awsAccountIntegrationSteps[2]" v-if="getCurrentStep() === 2" :awsAccount="awsAccountIntegrationSteps[1].getFormData()"/>
+              <aws-cur-form class="integrations__integrate-account--aws__form" :integrationAccountStep="awsAccountIntegrationSteps[2]" v-if="getCurrentStep() === 2" :awsAccount="awsAccountIntegrationSteps[1].getFormData()"/>
             </v-flex>
           </v-layout>
         </v-container>
@@ -198,13 +199,24 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-  img {
-    &.aws {
-      margin-left: 1rem;
+<style lang="scss">
+  .integrations__integrate-account {
+    img {
+      &.aws {
+        margin-left: 1rem;
+      }
+      &.gcp {
+        margin-left: 3.5rem;
+      }
     }
-    &.gcp {
-      margin-left: 3.5rem;
+    &--aws {
+      .el-dialog {
+        @apply px-5;
+        @apply my-2 #{!important};
+      }
+      &__form {
+        min-height: 70vh;
+      }
     }
   }
 </style>

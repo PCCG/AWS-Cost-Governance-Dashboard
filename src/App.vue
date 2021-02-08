@@ -223,4 +223,9 @@ header {
   font-size: 1rem !important;
   line-height: 2rem !important;
 }
+
+// TODO: Figure out why text-align does not have any effect on elements
+.el-loading-spinner {
+  left: 45%;
+}
 </style>

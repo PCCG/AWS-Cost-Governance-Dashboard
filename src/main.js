@@ -1,9 +1,12 @@
+/* eslint-disable */
 import Vue from "vue";
 import App from "./App.vue";
 
 import "./plugins/element.js";
 import "./plugins/composition-api";
 import vuetify from "./plugins/vuetify";
+
+import moment from "moment";
 
 import router from "./router";
 import store from "./store";

@@ -80,8 +80,8 @@ export default {
         },
         chartData() {
             if(this.billingPeriod) {
-                const billingPeriodStartDate = new Date(this.billingPeriod[0]).toLocaleDateString();
-                const billingPeriodEndDate = new Date(this.billingPeriod[1]).toLocaleDateString();
+                const billingPeriodStartDate = moment(this.billingPeriod[0]).format("MM/DD/YYYY");
+                const billingPeriodEndDate = moment(this.billingPeriod[1]).format("MM/DD/YYYY");
                 let billingPeriodObjects = [];
                 for(let report of this.costReport) {
                     const billingPeriod = Object.keys(report)[0];

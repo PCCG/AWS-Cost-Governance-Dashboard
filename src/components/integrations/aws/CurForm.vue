@@ -5,10 +5,12 @@
         <el-table
           v-loading="tableLoading"
           ref="singleTable"
+          height="55vh"
           :data="curSetupAgainstAccount"
           highlight-current-row
           @current-change="setSelection"
           :empty-text="CUR_NOT_SETUP_IN_ACCOUNT"
+          class="cursor-pointer"
           style="width: 100%;">
           <el-table-column
             prop="reportName"
@@ -23,15 +25,15 @@
             label="Report Prefix">
           </el-table-column>
         </el-table>
-        <br/>
-        <el-alert
-          v-show="validationFailed"
-          title="Please choose a Cost & Usage Report"
-          type="error"
-          @close="validationFailed = false"
-          show-icon>
-        </el-alert>
       </v-flex>
+      <el-alert
+        v-show="validationFailed"
+        title="Please choose a Cost & Usage Report"
+        type="error"
+        class="mt-10"
+        @close="validationFailed = false"
+        show-icon>
+      </el-alert>
     </v-layout>
   </v-container>
 </template>
