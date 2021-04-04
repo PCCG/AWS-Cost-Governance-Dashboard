@@ -33,7 +33,7 @@
                                         {{ moment(moment.utc(row.timestamp).toDate()).local().format("lll") }}
                                     </template>
                                 </el-table-column>
-                                <el-table-column label="Records Processed" property="number_of_records" align="center"></el-table-column>
+                                <!-- <el-table-column label="Records Processed" property="number_of_records" align="center"></el-table-column> -->
                             </el-table>
                         </el-card>
                     </el-popover>
@@ -45,51 +45,64 @@
                     <i class="clickable-icon el-icon-delete primary-color pr-3" role="button" @click="DELETE_AWS_ACCOUNT(awsAccount._id)"/>
                 </el-tooltip>
             </v-flex>
-            <v-flex xs12 class="flex-centered-start mt-5">
-                <div class="flex-centered-start">
-                    <el-date-picker
-                        v-model="billingPeriod"
-                        class="mt-3"
-                        type="monthrange"
-                        range-separator="-"
-                        :picker-options="pickerOptions"
-                        start-placeholder="Start Month"
-                        end-placeholder="End Month"
-                    >
-                    </el-date-picker>
-                    <i class="el-icon-question primary-color mt-3 ml-3"/>
-                </div>
-                <el-dropdown :hide-on-click="false" trigger="click" class="mt-4 ml-7">
-                    <div class="el-dropdown-link">
-                        <v-icon class="primary-color clickable-icon" title="Filter By">mdi-filter</v-icon>
-                    </div>
-                    <el-dropdown-menu slot="dropdown">
-                        <div class="m-5">
-                            <header>Cost Type</header>
-                            <div class="mt-5">
-                                <el-radio v-model="costType" :label="BLENDED_COST_KEY">Blended Costs</el-radio>
-                                <el-radio v-model="costType" :label="UNBLENDED_COST_KEY">Unblended Costs</el-radio>
-                            </div>
-                            <header class="mt-7">Filter By</header>
-                            <div class="mt-3" style="display: flex; justify-content: space-between;">
-                                <el-dropdown-item style="padding-left: 0" :class="{'primary-color' : GROUP_BY_ITEM === groupBy}" :key="GROUP_BY_ITEM" v-for="GROUP_BY_ITEM in groupByOptions" @click.native="groupBy = GROUP_BY_ITEM">{{ GROUP_BY_ITEM }} <i v-if="groupBy === GROUP_BY_ITEM" class="el-icon-check primary-color"/></el-dropdown-item>
-                            </div>
-                        </div>
-                    </el-dropdown-menu>
-                </el-dropdown>  
-            </v-flex>
-            <v-flex xs12 class="text-center" v-if="!collectionStatuses.length">
-                Collection hasn't been initiated yet!
-                <el-button type="primary" 
-                    @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"
+            <div v-if="!collectionStatuses.length">
+                <div class="fixed" 
+                    style="left: 50%; top: 50%; transform: translate(-50%, -50%)" 
                 >
-                    Start Collection 
-                    <i style="font-size: 18px; vertical-align: text-bottom" 
-                        class="el-icon-video-play"
-                    />
-                </el-button>
-            </v-flex>
+                    <div class="relative flex items-center" style="left: 50%; transform: translateX(-50%)">
+                        <el-button
+                            size="mini"
+                            icon="el-icon-video-play"
+                            class="text-base"
+                            type="primary"
+                            @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"
+                        >
+                            Start Collection
+                        </el-button>
+                        <el-tooltip 
+                            transition="none"
+                            placement="top"
+                            content="A collection gathers spend for the integration by reaching out to the provider"
+                        >
+                            <i class="el-icon-question text-2xl primary-color text-base transform translate-x-5"/>
+                        </el-tooltip>
+                    </div>
+                </div>
+            </div>
             <v-layout row v-else>
+                <v-flex xs12 class="flex-centered-start mt-5">
+                    <div class="flex-centered-start">
+                        <el-date-picker
+                            v-model="billingPeriod"
+                            class="mt-3"
+                            type="monthrange"
+                            range-separator="-"
+                            :picker-options="pickerOptions"
+                            start-placeholder="Start Month"
+                            end-placeholder="End Month"
+                        >
+                        </el-date-picker>
+                        <i class="el-icon-question primary-color mt-3 ml-3"/>
+                    </div>
+                    <el-dropdown :hide-on-click="false" trigger="click" class="mt-4 ml-7">
+                        <div class="el-dropdown-link">
+                            <v-icon class="primary-color clickable-icon" title="Filter By">mdi-filter</v-icon>
+                        </div>
+                        <el-dropdown-menu slot="dropdown">
+                            <div class="m-5">
+                                <header>Cost Type</header>
+                                <div class="mt-5">
+                                    <el-radio v-model="costType" :label="BLENDED_COST_KEY">Blended Costs</el-radio>
+                                    <el-radio v-model="costType" :label="UNBLENDED_COST_KEY">Unblended Costs</el-radio>
+                                </div>
+                                <header class="mt-7">Filter By</header>
+                                <div class="mt-3" style="display: flex; justify-content: space-between;">
+                                    <el-dropdown-item style="padding-left: 0" :class="{'primary-color' : GROUP_BY_ITEM === groupBy}" :key="GROUP_BY_ITEM" v-for="GROUP_BY_ITEM in groupByOptions" @click.native="groupBy = GROUP_BY_ITEM">{{ GROUP_BY_ITEM }} <i v-if="groupBy === GROUP_BY_ITEM" class="el-icon-check primary-color"/></el-dropdown-item>
+                                </div>
+                            </div>
+                        </el-dropdown-menu>
+                    </el-dropdown>  
+                </v-flex>
                 <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
                     <el-card shadow="always">
                         <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
