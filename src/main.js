@@ -13,7 +13,7 @@ import store from "./store";
 
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@mdi/font/css/materialdesignicons.css";
-import "./assets/styles/tailwind.css";
+import "windi.css";
 
 Vue.config.productionTip = false;
 

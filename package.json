@@ -53,7 +53,8 @@
     "vue-cli-plugin-element": "^1.0.1",
     "vue-cli-plugin-vuetify": "^2.0.9",
     "vue-template-compiler": "^2.6.12",
-    "vuetify-loader": "^1.6.0"
+    "vuetify-loader": "^1.6.0",
+    "windicss-webpack-plugin": "^0.3.3"
   },
   "eslintConfig": {
     "root": true,
