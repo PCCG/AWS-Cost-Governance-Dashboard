@@ -3,6 +3,7 @@ const colors = require("windicss/colors");
 module.exports = {
 	purge: [],
 	presets: [],
+	important: true,
 	darkMode: false, // or 'media' or 'class'
 	theme: {
 		screens: {
