@@ -45,29 +45,23 @@
                     <i class="clickable-icon el-icon-delete primary-color pr-3" role="button" @click="DELETE_AWS_ACCOUNT(awsAccount._id)"/>
                 </el-tooltip>
             </v-flex>
-            <div v-if="!collectionStatuses.length">
-                <div class="fixed" 
-                    style="left: 50%; top: 50%; transform: translate(-50%, -50%)" 
+            <div class="flex items-center position-center" v-if="!collectionStatuses.length">
+                <el-button
+                    size="mini"
+                    icon="el-icon-video-play"
+                    class="text-base"
+                    type="primary"
+                    @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"
                 >
-                    <div class="relative flex items-center" style="left: 50%; transform: translateX(-50%)">
-                        <el-button
-                            size="mini"
-                            icon="el-icon-video-play"
-                            class="text-base"
-                            type="primary"
-                            @click="START_AWS_ACCOUNT_AGGREGATION(awsAccount._id)"
-                        >
-                            Start Collection
-                        </el-button>
-                        <el-tooltip 
-                            transition="none"
-                            placement="top"
-                            content="A collection gathers spend for the integration by reaching out to the provider"
-                        >
-                            <i class="el-icon-question text-2xl primary-color text-base transform translate-x-5"/>
-                        </el-tooltip>
-                    </div>
-                </div>
+                    Start Collection
+                </el-button>
+                <el-tooltip 
+                    transition="none"
+                    placement="top"
+                    content="A collection gathers spend for the integration by reaching out to the provider"
+                >
+                    <i class="el-icon-question text-2xl primary-color text-base transform translate-x-5"/>
+                </el-tooltip>
             </div>
             <v-layout row v-else>
                 <v-flex xs12 class="flex-centered-start mt-5">
@@ -84,9 +78,9 @@
                         </el-date-picker>
                         <i class="el-icon-question primary-color mt-3 ml-3"/>
                     </div>
-                    <el-dropdown :hide-on-click="false" trigger="click" class="mt-4 ml-7">
+                    <el-dropdown :hide-on-click="false" trigger="click" class="mt-4 ml-5">
                         <div class="el-dropdown-link">
-                            <v-icon class="primary-color clickable-icon" title="Filter By">mdi-filter</v-icon>
+                            <v-icon class="primary-color clickable-icon" title="Filter Spend">mdi-filter</v-icon>
                         </div>
                         <el-dropdown-menu slot="dropdown">
                             <div class="m-5">
@@ -103,16 +97,26 @@
                         </el-dropdown-menu>
                     </el-dropdown>  
                 </v-flex>
-                <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
-                    <el-card shadow="always">
-                        <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
-                    </el-card>
-                </v-flex> 
-                <v-flex xs12 md7 class="mt-7 cost-breakdown-chart">
-                    <el-card shadow="always">
-                        <cost-breakdown-bar-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
-                    </el-card>
-                </v-flex>  
+                <v-container fluid v-if="billingPeriod">
+                    <v-layout row wrap>
+                        <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
+                            <el-card shadow="always">
+                                <cost-breakdown-pie-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
+                            </el-card>
+                        </v-flex> 
+                        <v-flex xs12 md7 class="mt-7 cost-breakdown-chart">
+                            <el-card shadow="always">
+                                <cost-breakdown-bar-chart style="min-height: 40.6vh" :billingPeriod="billingPeriod" :groupBy="groupBy" :costType="costType" :costReport="costReport"/>
+                            </el-card>
+                        </v-flex>
+                    </v-layout> 
+                </v-container>
+                <div class="primary-color position-center flex items-center" v-else>
+                    <i class="el-icon-info primary-color text-2xl mr-1"/>
+                    <span class="font-semibold mt-1">
+                        Specify billing duration to see spend for the account
+                    </span>
+                </div>                 
             </v-layout>
         </v-layout>
     </v-container>    
@@ -209,6 +213,13 @@ export default {
             font-size: 10px !important;
         }
     }
+    
+    .position-center {
+        left: 50%; 
+        top: 50%; 
+        transform: translate(-50%, -50%);
+        @apply fixed;
+    }    
 
     .cost-breakdown-chart {
         .el-card {

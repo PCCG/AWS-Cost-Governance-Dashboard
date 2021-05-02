@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mt-5 px-10">
+  <v-container class="mt-5" fluid>
     <v-layout row wrap>
       <v-flex class="my-2" xs12 sm6 v-for="account in integratedAccounts" :key="account._id">
         <el-card :class="`integrated-account-card integrated-account-card__${cloudProvider(account)}`" shadow="always">
