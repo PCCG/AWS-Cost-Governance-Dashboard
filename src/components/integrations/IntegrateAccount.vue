@@ -212,7 +212,7 @@ export default {
     &--aws {
       .el-dialog {
         @apply px-5;
-        @apply my-2 #{!important};
+        @apply my-2;
       }
       &__form {
         min-height: 70vh;
