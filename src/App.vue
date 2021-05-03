@@ -6,7 +6,7 @@
         app
         clipped-left
         dark
-        :class="{'z-30' : !minimizeDrawer}"
+        class="z-3000"
       >
         <v-app-bar-nav-icon @click.stop="minimizeDrawer = !minimizeDrawer"></v-app-bar-nav-icon>
         <v-toolbar-title>TORCH</v-toolbar-title>
@@ -16,11 +16,11 @@
         <v-btn icon color="white" title="Help" @click="showHelpDialogForRoute(currentRouteName)"><v-icon small>mdi-help</v-icon></v-btn>
       </v-app-bar>
       <v-navigation-drawer
-        :class="{'z-20' : !minimizeDrawer}"
         style="box-shadow: 0 10px 12px -5px rgb(0 0 0 / 25%), 0 17px 25px 2px rgb(0 0 0 / 15%), 0 6px 30px 5px rgb(0 0 0 / 14%);"
         app
         clipped
         permanent
+        class="z-2999"
         :mini-variant="minimizeDrawer"
       >
         <v-list nav expand>
@@ -51,7 +51,7 @@
           {{errorMessage}}
         </template>
       </common-dialog>
-      <v-overlay class="opacity-40" :z-index="10" @click.native="minimizeDrawer = true" v-show="!minimizeDrawer"/>
+      <v-overlay :z-index="2995" class="opacity-40" @click.native="minimizeDrawer = true" v-show="!minimizeDrawer"/>
       <router-view 
         style="background: rgba(175, 180, 200, 0.1)" 
         class="overscroll-auto pl-25 pt-25 pr-10 min-h-screen min-w-full"
