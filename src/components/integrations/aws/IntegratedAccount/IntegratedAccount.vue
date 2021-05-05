@@ -72,8 +72,8 @@
                             type="monthrange"
                             range-separator="-"
                             :picker-options="pickerOptions"
-                            start-placeholder="Start Month"
-                            end-placeholder="End Month"
+                            start-placeholder="Start Date"
+                            end-placeholder="End Date"
                             :clearable="false"
                         >
                         </el-date-picker>
