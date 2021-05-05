@@ -74,6 +74,7 @@
                             :picker-options="pickerOptions"
                             start-placeholder="Start Month"
                             end-placeholder="End Month"
+                            :clearable="false"
                         >
                         </el-date-picker>
                         <i class="el-icon-question primary-color mt-3 ml-3"/>
@@ -90,14 +91,21 @@
                                     <el-radio v-model="costType" :label="UNBLENDED_COST_KEY">Unblended Costs</el-radio>
                                 </div>
                                 <header class="mt-7">Filter By</header>
-                                <div class="mt-3" style="display: flex; justify-content: space-between;">
-                                    <el-dropdown-item style="padding-left: 0" :class="{'primary-color' : GROUP_BY_ITEM === groupBy}" :key="GROUP_BY_ITEM" v-for="GROUP_BY_ITEM in groupByOptions" @click.native="groupBy = GROUP_BY_ITEM">{{ GROUP_BY_ITEM }} <i v-if="groupBy === GROUP_BY_ITEM" class="el-icon-check primary-color"/></el-dropdown-item>
-                                </div>
+                                <el-dropdown-item class="mt-3 pl-0">
+                                    <el-radio 
+                                        v-model="groupBy" 
+                                        :label="GROUP_BY_ITEM"
+                                        v-for="GROUP_BY_ITEM in groupByOptions"
+                                        :key="GROUP_BY_ITEM"
+                                    >
+                                        {{ GROUP_BY_ITEM }}
+                                    </el-radio>
+                                </el-dropdown-item>
                             </div>
                         </el-dropdown-menu>
                     </el-dropdown>  
                 </v-flex>
-                <v-container fluid v-if="billingPeriod">
+                <v-container fluid>
                     <v-layout row wrap>
                         <v-flex xs12 md5 class="mt-7 cost-breakdown-chart">
                             <el-card shadow="always">
@@ -110,13 +118,7 @@
                             </el-card>
                         </v-flex>
                     </v-layout> 
-                </v-container>
-                <div class="primary-color position-center flex items-center" v-else>
-                    <i class="el-icon-info primary-color text-2xl mr-1"/>
-                    <span class="font-semibold mt-1">
-                        Specify billing duration to see spend for the account
-                    </span>
-                </div>                 
+                </v-container>                
             </v-layout>
         </v-layout>
     </v-container>    
@@ -148,7 +150,7 @@ export default {
         groupBy: GROUP_BY_SERVICE_KEY,
         BLENDED_COST_KEY,
         UNBLENDED_COST_KEY,
-        groupByOptions: [GROUP_BY_ACCOUNT_KEY, GROUP_BY_REGION_KEY, GROUP_BY_SERVICE_KEY]
+        groupByOptions: [GROUP_BY_SERVICE_KEY, GROUP_BY_REGION_KEY, GROUP_BY_ACCOUNT_KEY]
     }),
     props: {
         account: {
@@ -194,6 +196,12 @@ export default {
         vm.is_loading = true;
         const processedData = await aggregationClient.fetchProcessedData(vm.awsAccount._id);
         vm.processedData = processedData;
+        if(this.costReport.length) {
+            const endDate = new Date(Object.keys(this.costReport[this.costReport.length - 1])[0].split("-")[1]).toISOString();
+            const startDate = new Date(Object.keys(this.costReport[0])[0].split("-")[0]).toISOString();
+            const billingPeriod = moment(endDate).diff(startDate, "months", true);
+            vm.billingPeriod = billingPeriod > 6 ? [moment(endDate).subtract(6, "months"), endDate] : [startDate, endDate];
+        }        
         vm.is_loading = false;
     }
 }

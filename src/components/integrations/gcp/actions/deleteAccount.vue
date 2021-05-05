@@ -56,7 +56,7 @@ export default {
         await vm.DELETE_GCP_ACCOUNT(vm.accountId);
         vm.closeConfirmationDialog();
       } catch (e) {
-        window.console.log(e.message);
+        console.error(e);
       }
     },
     closeConfirmationDialog () {

@@ -99,7 +99,6 @@ export default {
                         } else {
                             billingPeriodObject = report[billingPeriod].account;
                         }
-                        console.log(reportStartDate, moment(reportStartDate).format('MMM YYYY'));
                         billingPeriodObjects.push({...billingPeriodObject, month: moment(reportStartDate).format('MMM YYYY')});
                     }
                     if(billingPeriod.split('-')[1].includes(billingPeriodEndDate)) {
