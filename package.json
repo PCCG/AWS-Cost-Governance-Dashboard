@@ -18,7 +18,7 @@
     "element-ui": "^2.15.0",
     "flush-promises": "^1.0.2",
     "moment": "^2.29.1",
-    "postcss": "^7.0.35",
+    "postcss": "^7.0.36",
     "postcss-loader": "^4.2.0",
     "roboto-fontface": "^0.10.0",
     "vue": "^2.6.12",
